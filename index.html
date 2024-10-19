@@ -1,0 +1,1149 @@
+<!DOCTYPE html>
+<html lang="EN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SM.studio ai</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/default.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #4a90e2;
+            --secondary-color: #f1f1f1;
+            --text-color: #333;
+            --bg-color: #fff;
+            --sidebar-bg: #f9f9f9;
+            --chat-user-bg: rgba(144, 185, 185, 0.651);
+            --chat-ai-bg: rgba(196, 255, 201, 0.651);
+            --code-bg: #f5f5f5;
+            --table-header-bg: #e0e0e0c2;
+            --table-row-even: #f9f9f9a8;
+            --table-row-odd: #ffffffa2;
+            --icon-color: rgb(100, 14, 54);
+            --iput-bg: azure;
+            --modal-bg: rgba(66, 150, 150, 0.55);
+        }
+
+        .dark-mode {
+            --primary-color: #2196f3;
+            --secondary-color: #424242;
+            --text-color: #f1f1f1;
+            --bg-color: #121212;
+            --sidebar-bg: #1e1e1e;
+            --chat-user-bg: #1a3a4a85;
+            --chat-ai-bg: #1a2e1a94;
+            --code-bg: #2d2d2d;
+            --table-header-bg: #333333ad;
+            --table-row-even: #2a2a2a9f;
+            --table-row-odd: #222222a9;
+            --icon-color: rgb(219, 33, 120);
+            --iput-bg: #333;
+            --modal-bg: rgba(0, 0, 0, 0.55);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: background-color 0.3s, color 0.3s;
+            line-height: 1.6;
+        }
+
+        .container {
+            display: flex;
+            height: 100vh;
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: var(--sidebar-bg);
+            padding: 20px;
+            transition: transform 0.3s;
+        }
+
+        .sidebar.closed {
+            transform: translateX(-250px);
+        }
+
+        .content {
+            flex-grow: 1;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        
+
+        .toggle-sidebar {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            font-size: 24px;
+            cursor: pointer;
+            position: fixed;
+            top: 20px;
+            left: 250px;
+            margin-bottom: 20px;
+        }
+
+        .mylist{
+            padding: 2rem;
+            background-color: var(--chat-user-bg);
+            color: var(--text-color);
+            list-style: none;
+        }
+
+        .mylist li{
+            background-color: var(--chat-user-bg);
+            padding: 8px;
+            margin: 10px auto;
+            cursor: pointer;
+        }
+
+        .mylist li i{
+            color: var(--icon-color);
+            font-size: 24px;
+            padding-right: 10px;
+        }
+        .mylist li:hover{
+            box-shadow: 0 0.8rem 1.3rem rgba(0,0,0,0.4);
+            border-radius: 8px;
+        }
+
+        .chat-container {
+            flex-grow: 1;
+            overflow-y: auto;
+            background-color: #ff7700;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1600 900'%3E%3Cpolygon fill='%23cc0000' points='957 450 539 900 1396 900'/%3E%3Cpolygon fill='%23aa0000' points='957 450 872.9 900 1396 900'/%3E%3Cpolygon fill='%23d6002b' points='-60 900 398 662 816 900'/%3E%3Cpolygon fill='%23b10022' points='337 900 398 662 816 900'/%3E%3Cpolygon fill='%23d9004b' points='1203 546 1552 900 876 900'/%3E%3Cpolygon fill='%23b2003d' points='1203 546 1552 900 1162 900'/%3E%3Cpolygon fill='%23d3006c' points='641 695 886 900 367 900'/%3E%3Cpolygon fill='%23ac0057' points='587 900 641 695 886 900'/%3E%3Cpolygon fill='%23c4008c' points='1710 900 1401 632 1096 900'/%3E%3Cpolygon fill='%239e0071' points='1710 900 1401 632 1365 900'/%3E%3Cpolygon fill='%23aa00aa' points='1210 900 971 687 725 900'/%3E%3Cpolygon fill='%23880088' points='943 900 1210 900 971 687'/%3E%3C/svg%3E");
+            background-attachment: fixed;
+            background-size: cover;
+            border: 1px solid var(--secondary-color);
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+
+        /* .chat-container يبقى كما هو */
+        .message-wrapper {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin: 10px;
+        }
+        
+        /* تنسيق الصورة الرمزية (Avatar) */
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            shape-outside: circle(80%);
+        }
+        
+        /* رسائل المستخدم */
+        .user-message-wrapper {
+            justify-content: flex-end;
+        }
+        
+        .user-message {
+            background-color: var(--chat-user-bg);
+            color: var(--text-color);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 10px;
+            border-top-left-radius: 20px;
+            border-bottom-left-radius: 20px;
+            border-bottom-right-radius: 20px;
+            
+            max-width: 60%;
+            margin-left: auto;
+            text-align: left;
+        }
+        
+        /* رسائل AI */
+        .ai-message-wrapper {
+            justify-content: flex-start;
+        }
+        
+        .ai-message {
+            background-color: var(--chat-ai-bg);
+            color: var(--text-color);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-top-right-radius: 20px;
+            border-bottom-left-radius: 20px;
+            border-bottom-right-radius: 20px;
+            box-shadow: 0 0.8rem 1.5rem rgba(0,0,0,0.3);
+            padding: 2rem;
+            max-width: 80%;
+            text-align: left;
+        }
+        
+        .input-container {
+            display: flex;
+        }
+
+        #user-input {
+            flex-grow: 1;
+            padding: 15px;
+            background-color: var(--iput-bg);
+            box-shadow: 0 0 10px rgba(0,0,0,0.4);
+            border-top-left-radius: 24px;
+            border-bottom-left-radius: 24px;
+            outline: none;
+            border: none;
+            
+        }
+
+        #send-button {
+            padding: 10px 20px;
+            background-color: var(--primary-color);
+            color: var(--text-color);
+            border: none;
+            border-top-right-radius: 24px;
+            border-bottom-right-radius: 24px;
+            cursor: pointer;
+        }
+
+        .mode-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: var(--text-color);
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 80%;
+            border-radius: 8px;
+            margin-bottom: 1em;
+        }
+
+        th, td {
+            border: 1px solid var(--secondary-color);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: var(--table-header-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            color: var(--text-color);
+        }
+
+        tr:nth-child(even) {
+            background-color: var(--table-row-even);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+
+        tr:nth-child(odd) {
+            background-color: var(--table-row-odd);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+
+        pre {
+            background-color: var(--code-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--secondary-color);
+            border-radius: 4px;
+            padding: 1rem;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            position: relative;
+            direction: ltr;
+            text-align: left;
+        }
+
+        code {
+            font-family: 'Courier New', Courier, monospace;
+            overflow-x: auto;
+        }
+
+        .copy-button, .run-button {
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .run-button {
+            left: 70px;
+        }
+
+        .message p {
+            margin-bottom: 10px;
+            margin-left: 10px;
+        }
+
+        .message ul, .message ol {
+            margin-right: 30px;
+            margin-bottom: 12px;
+            padding: 1rem;
+        }
+
+        .message h1, .message h2, .message h3, .message h4 {
+            margin-top: 15px;
+            margin-bottom: 10px;
+        }
+
+        .message blockquote {
+            border-right: 3px solid var(--primary-color);
+            margin: 10px 0;
+            padding-right: 10px;
+            color: var(--text-color);
+            font-style: italic;
+        }
+
+        .message hr {
+            border: none;
+            border-top: 1px solid var(--secondary-color);
+            margin: 15px 0;
+        }
+
+        .table-controls {
+            margin-bottom: 10px;
+        }
+
+        .table-controls button {
+            margin-left: 5px;
+            padding: 5px 10px;
+            background-color: var(--primary-color);
+            color: var(--text-color);
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        #color-picker {
+            margin-right: 10px;
+            border-radius: 5px;
+            border: none;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+
+        .modal-content {
+            background-color: var(--modal-bg);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            padding: 20px;
+            box-shadow: 0 2rem 5rem rgba(0,0,0,0.4);
+            width: 80%;
+            max-width: 800px;
+            max-height: 600px;
+            border-radius: 8px;
+            transform: translate(-50%, -50%);
+            resize: both;
+            min-height: 200px;
+            min-width: 300px;
+            left: 50%;
+            position: absolute;
+            top: 50%;
+            overflow: hidden;
+        }
+
+        .header{
+            width: 100%;
+            height: 45px;
+            padding: none;
+            border-radius: 8px;
+            background-color: var(--chat-user-bg);
+            cursor: move;
+            user-select: none;
+        }
+       
+        #expandBtn{
+            border-top-right-radius: 8px;
+            border-bottom-right-radius: 8px;
+        }
+        #expandBtn, #maximizeBtn, #minimizeBtn {
+            color: var(--text-color);
+            float: right;
+            font-size: 25px;
+            background-color: var(--chat-user-bg);
+            justify-content: center;
+            text-align: center;
+            align-items: center;
+            margin: 0 auto;
+            border: none;
+            padding: 8px 10px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        #expandBtn:hover, #maximizeBtn:hover, #minimizeBtn:hover{
+            color: #fff;
+            background-color: red;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .close{
+            color: gray;
+            float: left;
+            font-size: 25px;
+            border-top-left-radius: 8px;
+            border-bottom-left-radius: 8px;
+            background-color: var(--chat-user-bg);
+            padding: 3px 10px;
+            justify-content: center;
+            text-align: center;
+            align-items: center;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        
+        .close:hover,
+        .close:focus {
+            color: #fff;
+            background-color: red;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .theme {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .theme-btn {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .theme-options {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+        }
+        .theme-option {
+            width: 80px;
+            height: 80px;
+            border: 1px solid #ccc;
+            border-radius: 50%;
+            object-fit: cover;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        .theme-option:hover {
+            transform: scale(1.05);
+        }
+        .theme-option.selected {
+            border-color: #4CAF50;
+            border: 2px solid #ff7700;
+            box-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+        }
+
+       
+        .resize-handle {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: transparent;
+            border-radius: 50%;
+        }
+        
+        .top-left { top: -5px; left: -5px; cursor: nwse-resize; }
+        .top-right { top: -5px; right: -5px; cursor: nesw-resize; }
+        .bottom-left { bottom: -5px; left: -5px; cursor: nesw-resize; }
+        .bottom-right { bottom: -5px; right: -5px; cursor: nwse-resize; }
+
+
+        #preview-container {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar" id="sidebar">
+            <button class="toggle-sidebar" id="toggle-sidebar">
+                <i class="fas fa-bars"></i>
+            </button>
+            <h2>List</h2>
+            <ul id="myList" class="mylist">
+                <li><i class="fas fa-home"></i>Home</li>
+                <li><i class="fas fa-cog"></i>Settings</li>
+                <li><i class="fas fa-history"></i>Hestory</li>
+                <li><i class="fas fa-info-circle"></i>About</li>
+            </ul>
+
+            <div class="theme">
+                <h2>Choose Your theme <i class="fas fa-theme"></i></h2>
+                <button class="theme-btn" id="open-theme-modal">Choose Theme</button>
+            </div>
+            
+        </div>
+        <div class="content">
+            <button class="mode-toggle" id="mode-toggle">
+                <i class="fas fa-moon"></i>
+            </button>
+            <h1>SM.studio Chat-bot ai</h1>
+            <div class="chat-container" id="chat-container"></div>
+            <div class="input-container">
+                <input type="text" id="user-input" placeholder="Write your message here...">
+                <button id="send-button">Send</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- مودال لاختيار الـ themes -->
+    <div id="themeModal" class="modal">
+        <div class="modal-content">
+            <header class="header">
+                <span class="close">&times;</span>
+                <button id="expandBtn"><i class="fa-solid fa-expand"></i></button>
+                <button id="maximizeBtn"><i class="fa-solid  fa-window-maximize"></i></button>
+                <button id="minimizeBtn"><i class="fa-solid fa-window-minimize"></i></button>
+            </header>
+              
+            
+            <h2>Choose Your Theme</h2>
+            <div class="theme-options">
+                <div class="theme-option" data-theme="theme1">
+                    <svg xmlns='http://www.w3.org/2000/svg' width='100%' height='100%' viewBox='0 0 500 500'><rect fill='#ffaa00' width='1600' height='800'/><g fill-opacity='1'><path fill='#ffb100'  d='M486 705.8c-109.3-21.8-223.4-32.2-335.3-19.4C99.5 692.1 49 703 0 719.8V800h843.8c-115.9-33.2-230.8-68.1-347.6-92.2C492.8 707.1 489.4 706.5 486 705.8z'/><path fill='#ffb800'  d='M1600 0H0v719.8c49-16.8 99.5-27.8 150.7-33.5c111.9-12.7 226-2.4 335.3 19.4c3.4 0.7 6.8 1.4 10.2 2c116.8 24 231.7 59 347.6 92.2H1600V0z'/><path fill='#ffbe00'  d='M478.4 581c3.2 0.8 6.4 1.7 9.5 2.5c196.2 52.5 388.7 133.5 593.5 176.6c174.2 36.6 349.5 29.2 518.6-10.2V0H0v574.9c52.3-17.6 106.5-27.7 161.1-30.9C268.4 537.4 375.7 554.2 478.4 581z'/><path fill='#ffc500'  d='M0 0v429.4c55.6-18.4 113.5-27.3 171.4-27.7c102.8-0.8 203.2 22.7 299.3 54.5c3 1 5.9 2 8.9 3c183.6 62 365.7 146.1 562.4 192.1c186.7 43.7 376.3 34.4 557.9-12.6V0H0z'/><path fill='#ffcc00'  d='M181.8 259.4c98.2 6 191.9 35.2 281.3 72.1c2.8 1.1 5.5 2.3 8.3 3.4c171 71.6 342.7 158.5 531.3 207.7c198.8 51.8 403.4 40.8 597.3-14.8V0H0v283.2C59 263.6 120.6 255.7 181.8 259.4z'/><path fill='#ffd914'  d='M1600 0H0v136.3c62.3-20.9 127.7-27.5 192.2-19.2c93.6 12.1 180.5 47.7 263.3 89.6c2.6 1.3 5.1 2.6 7.7 3.9c158.4 81.1 319.7 170.9 500.3 223.2c210.5 61 430.8 49 636.6-16.6V0z'/><path fill='#ffe529'  d='M454.9 86.3C600.7 177 751.6 269.3 924.1 325c208.6 67.4 431.3 60.8 637.9-5.3c12.8-4.1 25.4-8.4 38.1-12.9V0H288.1c56 21.3 108.7 50.6 159.7 82C450.2 83.4 452.5 84.9 454.9 86.3z'/><path fill='#ffef3d'  d='M1600 0H498c118.1 85.8 243.5 164.5 386.8 216.2c191.8 69.2 400 74.7 595 21.1c40.8-11.2 81.1-25.2 120.3-41.7V0z'/><path fill='#fff852'  d='M1397.5 154.8c47.2-10.6 93.6-25.3 138.6-43.8c21.7-8.9 43-18.8 63.9-29.5V0H643.4c62.9 41.7 129.7 78.2 202.1 107.4C1020.4 178.1 1214.2 196.1 1397.5 154.8z'/><path fill='#ffff66'  d='M1315.3 72.4c75.3-12.6 148.9-37.1 216.8-72.4h-723C966.8 71 1144.7 101 1315.3 72.4z'/></g></svg>
+                </div>
+                <div class="theme-option" data-theme="theme2">
+                    <svg xmlns='http://www.w3.org/2000/svg'  width='100' height='100' viewBox='0 0 200 200'><rect fill='#ee5522' width='200' height='200'/><defs><linearGradient id='a' gradientUnits='userSpaceOnUse' x1='100' y1='33' x2='100' y2='-3'><stop offset='0' stop-color='#000' stop-opacity='0'/><stop offset='1' stop-color='#000' stop-opacity='1'/></linearGradient><linearGradient id='b' gradientUnits='userSpaceOnUse' x1='100' y1='135' x2='100' y2='97'><stop offset='0' stop-color='#000' stop-opacity='0'/><stop offset='1' stop-color='#000' stop-opacity='1'/></linearGradient></defs><g  fill='#d23d09' fill-opacity='0.6'><rect x='100'  width='100' height='100'/><rect y='100'  width='100' height='100'/></g><g fill-opacity='0.5'><polygon fill='url(#a)' points='100 30 0 0 200 0'/><polygon fill='url(#b)' points='100 100 0 130 0 100 200 100 200 130'/></g></svg>
+                </div>
+                <div class="theme-option" data-theme="theme3">
+                    <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 500'><rect fill='#000000' width='2000' height='1500'/><defs><circle  stroke='#D60' vector-effect='non-scaling-stroke' id='a' fill='none' stroke-width='5' r='315'/><use id='f' href='#a' stroke-dasharray='100 100 100 9999'/><use id='b' href='#a' stroke-dasharray='250 250 250 250 250 9999'/><use id='e' href='#a' stroke-dasharray='1000 500 1000 500 9999'/><use id='g' href='#a' stroke-dasharray='1500 9999'/><use id='h' href='#a' stroke-dasharray='2000 500 500 9999'/><use id='j' href='#a' stroke-dasharray='800 800 800 800 800 9999'/><use id='k' href='#a' stroke-dasharray='1200 1200 1200 1200 1200 9999'/><use id='l' href='#a' stroke-dasharray='1600 1600 1600 1600 1600 9999'/></defs><g transform='translate(1000 750)' stroke-opacity='1'><g  transform='rotate(0 0 0)' ><circle  fill='#D60' fill-opacity='1' r='10'/><g  transform='rotate(0 0 0)'><use href='#f' transform='scale(.1) rotate(50 0 0)' /><use href='#f' transform='scale(.2) rotate(100 0 0)' /><use href='#f' transform='scale(.3) rotate(150 0 0)' /></g><g  transform='rotate(0 0 0)'><use href='#b' transform='scale(.4) rotate(200 0 0)' /><use href='#z' transform='scale(.5) rotate(250 0 0)' /></g><g  id='z' transform='rotate(0 0 0)'><g  transform='rotate(0 0 0)'><use href='#b'/><use href='#b' transform='scale(1.2) rotate(90 0 0)' /><use href='#b' transform='scale(1.4) rotate(60 0 0)' /><use href='#e' transform='scale(1.6) rotate(120 0 0)' /><use href='#e' transform='scale(1.8) rotate(30 0 0)' /></g></g><g  id='y' transform='rotate(0 0 0)'><g  transform='rotate(0 0 0)'><use href='#e' transform='scale(1.1) rotate(20 0 0)' /><use href='#g' transform='scale(1.3) rotate(-40 0 0)' /><use href='#g' transform='scale(1.5) rotate(60 0 0)' /><use href='#h' transform='scale(1.7) rotate(-80 0 0)' /><use href='#j' transform='scale(1.9) rotate(100 0 0)' /></g></g><g  transform='rotate(0 0 0)'><g  transform='rotate(0 0 0)'><g  transform='rotate(0 0 0)'><use href='#h' transform='scale(2) rotate(60 0 0)'/><use href='#j' transform='scale(2.1) rotate(120 0 0)'/><use href='#j' transform='scale(2.3) rotate(180 0 0)'/><use href='#h' transform='scale(2.4) rotate(240 0 0)'/><use href='#j' transform='scale(2.5) rotate(300 0 0)'/></g><use href='#y' transform='scale(2) rotate(180 0 0)' /><use href='#j' transform='scale(2.7)'/><use href='#j' transform='scale(2.8) rotate(45 0 0)'/><use href='#j' transform='scale(2.9) rotate(90 0 0)'/><use href='#k' transform='scale(3.1) rotate(135 0 0)'/><use href='#k' transform='scale(3.2) rotate(180 0 0)'/></g><use href='#k' transform='scale(3.3) rotate(225 0 0)'/><use href='#k' transform='scale(3.5) rotate(270 0 0)'/><use href='#k' transform='scale(3.6) rotate(315 0 0)'/><use href='#k' transform='scale(3.7)'/><use href='#k' transform='scale(3.9) rotate(75 0 0)'/></g></g></g></svg>
+                </div>
+                <div class="theme-option" data-theme="theme4">
+                    <svg xmlns='http://www.w3.org/2000/svg' width='100%' height='100%' viewBox='0 0 1600 800'><rect fill='#ff9d00' width='1600' height='800'/><g stroke='#000' stroke-width='66.7' stroke-opacity='0.05' ><circle  fill='#ff9d00' cx='0' cy='0' r='1800'/><circle  fill='#fb8d17' cx='0' cy='0' r='1700'/><circle  fill='#f47d24' cx='0' cy='0' r='1600'/><circle  fill='#ed6e2d' cx='0' cy='0' r='1500'/><circle  fill='#e35f34' cx='0' cy='0' r='1400'/><circle  fill='#d85239' cx='0' cy='0' r='1300'/><circle  fill='#cc453e' cx='0' cy='0' r='1200'/><circle  fill='#be3941' cx='0' cy='0' r='1100'/><circle  fill='#b02f43' cx='0' cy='0' r='1000'/><circle  fill='#a02644' cx='0' cy='0' r='900'/><circle  fill='#901e44' cx='0' cy='0' r='800'/><circle  fill='#801843' cx='0' cy='0' r='700'/><circle  fill='#6f1341' cx='0' cy='0' r='600'/><circle  fill='#5e0f3d' cx='0' cy='0' r='500'/><circle  fill='#4e0c38' cx='0' cy='0' r='400'/><circle  fill='#3e0933' cx='0' cy='0' r='300'/><circle  fill='#2e062c' cx='0' cy='0' r='200'/><circle  fill='#210024' cx='0' cy='0' r='100'/></g></svg>
+                </div>
+
+                <div class="theme-option" data-theme="theme5">
+                    <svg xmlns='http://www.w3.org/2000/svg' width='100%' height='100%' viewBox='0 0 1200 800'><rect fill='#ff0000' width='1200' height='800'/><defs><linearGradient id='a' gradientUnits='userSpaceOnUse' x1='600' y1='25' x2='600' y2='777'><stop  offset='0' stop-color='#ff0000'/><stop  offset='1' stop-color='#E0F'/></linearGradient><linearGradient id='b' gradientUnits='userSpaceOnUse' x1='650' y1='25' x2='650' y2='777'><stop  offset='0' stop-color='#ff0019'/><stop  offset='1' stop-color='#ce00f3'/></linearGradient><linearGradient id='c' gradientUnits='userSpaceOnUse' x1='700' y1='25' x2='700' y2='777'><stop  offset='0' stop-color='#ff0031'/><stop  offset='1' stop-color='#b000e6'/></linearGradient><linearGradient id='d' gradientUnits='userSpaceOnUse' x1='750' y1='25' x2='750' y2='777'><stop  offset='0' stop-color='#ff004a'/><stop  offset='1' stop-color='#9400da'/></linearGradient><linearGradient id='e' gradientUnits='userSpaceOnUse' x1='800' y1='25' x2='800' y2='777'><stop  offset='0' stop-color='#ff0063'/><stop  offset='1' stop-color='#7a00ce'/></linearGradient><linearGradient id='f' gradientUnits='userSpaceOnUse' x1='850' y1='25' x2='850' y2='777'><stop  offset='0' stop-color='#ff007c'/><stop  offset='1' stop-color='#6200c1'/></linearGradient><linearGradient id='g' gradientUnits='userSpaceOnUse' x1='900' y1='25' x2='900' y2='777'><stop  offset='0' stop-color='#ff0094'/><stop  offset='1' stop-color='#4d00b5'/></linearGradient><linearGradient id='h' gradientUnits='userSpaceOnUse' x1='950' y1='25' x2='950' y2='777'><stop  offset='0' stop-color='#ff00ad'/><stop  offset='1' stop-color='#3900a8'/></linearGradient><linearGradient id='i' gradientUnits='userSpaceOnUse' x1='1000' y1='25' x2='1000' y2='777'><stop  offset='0' stop-color='#ff00c6'/><stop  offset='1' stop-color='#28009c'/></linearGradient><linearGradient id='j' gradientUnits='userSpaceOnUse' x1='1050' y1='25' x2='1050' y2='777'><stop  offset='0' stop-color='#ff00df'/><stop  offset='1' stop-color='#180090'/></linearGradient><linearGradient id='k' gradientUnits='userSpaceOnUse' x1='1100' y1='25' x2='1100' y2='777'><stop  offset='0' stop-color='#ff00f7'/><stop  offset='1' stop-color='#0b0083'/></linearGradient><linearGradient id='l' gradientUnits='userSpaceOnUse' x1='1150' y1='25' x2='1150' y2='777'><stop  offset='0' stop-color='#E0F'/><stop  offset='1' stop-color='#007'/></linearGradient></defs><g fill-opacity='1'><rect fill='url(#a)' width='1200' height='800'/><rect fill='url(#b)' x='100' width='1100' height='800'/><rect fill='url(#c)' x='200' width='1000' height='800'/><rect fill='url(#d)' x='300' width='900' height='800'/><rect fill='url(#e)' x='400' width='800' height='800'/><rect fill='url(#f)' x='500' width='700' height='800'/><rect fill='url(#g)' x='600' width='600' height='800'/><rect fill='url(#h)' x='700' width='500' height='800'/><rect fill='url(#i)' x='800' width='400' height='800'/><rect fill='url(#j)' x='900' width='300' height='800'/><rect fill='url(#k)' x='1000' width='200' height='800'/><rect fill='url(#l)' x='1100' width='100' height='800'/></g></svg>
+                </div>
+                <div class="theme-option" data-theme="theme6">
+                    <svg xmlns='http://www.w3.org/2000/svg'  width='1600' height='800' viewBox='0 0 1600 800'><rect fill='#aa3333' width='1600' height='800'/><path  fill='#FF7' d='M1102.5 734.8c2.5-1.2 24.8-8.6 25.6-7.5.5.7-3.9 23.8-4.6 24.5C1123.3 752.1 1107.5 739.5 1102.5 734.8zM1226.3 229.1c0-.1-4.9-9.4-7-14.2-.1-.3-.3-1.1-.4-1.6-.1-.4-.3-.7-.6-.9-.3-.2-.6-.1-.8.1l-13.1 12.3c0 0 0 0 0 0-.2.2-.3.5-.4.8 0 .3 0 .7.2 1 .1.1 1.4 2.5 2.1 3.6 2.4 3.7 6.5 12.1 6.5 12.2.2.3.4.5.7.6.3 0 .5-.1.7-.3 0 0 1.8-2.5 2.7-3.6 1.5-1.6 3-3.2 4.6-4.7 1.2-1.2 1.6-1.4 2.1-1.6.5-.3 1.1-.5 2.5-1.9C1226.5 230.4 1226.6 229.6 1226.3 229.1zM33 770.3C33 770.3 33 770.3 33 770.3c0-.7-.5-1.2-1.2-1.2-.1 0-.3 0-.4.1-1.6.2-14.3.1-22.2 0-.3 0-.6.1-.9.4-.2.2-.4.5-.4.9 0 .2 0 4.9.1 5.9l.4 13.6c0 .3.2.6.4.9.2.2.5.3.8.3 0 0 .1 0 .1 0 7.3-.7 14.7-.9 22-.6.3 0 .7-.1.9-.3.2-.2.4-.6.4-.9C32.9 783.3 32.9 776.2 33 770.3z'/><path  fill='#5ff' d='M171.1 383.4c1.3-2.5 14.3-22 15.6-21.6.8.3 11.5 21.2 11.5 22.1C198.1 384.2 177.9 384 171.1 383.4zM596.4 711.8c-.1-.1-6.7-8.2-9.7-12.5-.2-.3-.5-1-.7-1.5-.2-.4-.4-.7-.7-.8-.3-.1-.6 0-.8.3L574 712c0 0 0 0 0 0-.2.2-.2.5-.2.9 0 .3.2.7.4.9.1.1 1.8 2.2 2.8 3.1 3.1 3.1 8.8 10.5 8.9 10.6.2.3.5.4.8.4.3 0 .5-.2.6-.5 0 0 1.2-2.8 2-4.1 1.1-1.9 2.3-3.7 3.5-5.5.9-1.4 1.3-1.7 1.7-2 .5-.4 1-.7 2.1-2.4C596.9 713.1 596.8 712.3 596.4 711.8zM727.5 179.9C727.5 179.9 727.5 179.9 727.5 179.9c.6.2 1.3-.2 1.4-.8 0-.1 0-.2 0-.4.2-1.4 2.8-12.6 4.5-19.5.1-.3 0-.6-.2-.8-.2-.3-.5-.4-.8-.5-.2 0-4.7-1.1-5.7-1.3l-13.4-2.7c-.3-.1-.7 0-.9.2-.2.2-.4.4-.5.6 0 0 0 .1 0 .1-.8 6.5-2.2 13.1-3.9 19.4-.1.3 0 .6.2.9.2.3.5.4.8.5C714.8 176.9 721.7 178.5 727.5 179.9zM728.5 178.1c-.1-.1-.2-.2-.4-.2C728.3 177.9 728.4 178 728.5 178.1z'/><g fill-opacity='1'  fill='#FFF'><path d='M699.6 472.7c-1.5 0-2.8-.8-3.5-2.3-.8-1.9 0-4.2 1.9-5 3.7-1.6 6.8-4.7 8.4-8.5 1.6-3.8 1.7-8.1.2-11.9-.3-.9-.8-1.8-1.2-2.8-.8-1.7-1.8-3.7-2.3-5.9-.9-4.1-.2-8.6 2-12.8 1.7-3.1 4.1-6.1 7.6-9.1 1.6-1.4 4-1.2 5.3.4 1.4 1.6 1.2 4-.4 5.3-2.8 2.5-4.7 4.7-5.9 7-1.4 2.6-1.9 5.3-1.3 7.6.3 1.4 1 2.8 1.7 4.3.5 1.1 1 2.2 1.5 3.3 2.1 5.6 2 12-.3 17.6-2.3 5.5-6.8 10.1-12.3 12.5C700.6 472.6 700.1 472.7 699.6 472.7zM740.4 421.4c1.5-.2 3 .5 3.8 1.9 1.1 1.8.4 4.2-1.4 5.3-3.7 2.1-6.4 5.6-7.6 9.5-1.2 4-.8 8.4 1.1 12.1.4.9 1 1.7 1.6 2.7 1 1.7 2.2 3.5 3 5.7 1.4 4 1.2 8.7-.6 13.2-1.4 3.4-3.5 6.6-6.8 10.1-1.5 1.6-3.9 1.7-5.5.2-1.6-1.4-1.7-3.9-.2-5.4 2.6-2.8 4.3-5.3 5.3-7.7 1.1-2.8 1.3-5.6.5-7.9-.5-1.3-1.3-2.7-2.2-4.1-.6-1-1.3-2.1-1.9-3.2-2.8-5.4-3.4-11.9-1.7-17.8 1.8-5.9 5.8-11 11.2-14C739.4 421.6 739.9 421.4 740.4 421.4zM261.3 590.9c5.7 6.8 9 15.7 9.4 22.4.5 7.3-2.4 16.4-10.2 20.4-3 1.5-6.7 2.2-11.2 2.2-7.9-.1-12.9-2.9-15.4-8.4-2.1-4.7-2.3-11.4 1.8-15.9 3.2-3.5 7.8-4.1 11.2-1.6 1.2.9 1.5 2.7.6 3.9-.9 1.2-2.7 1.5-3.9.6-1.8-1.3-3.6.6-3.8.8-2.4 2.6-2.1 7-.8 9.9 1.5 3.4 4.7 5 10.4 5.1 3.6 0 6.4-.5 8.6-1.6 4.7-2.4 7.7-8.6 7.2-15-.5-7.3-5.3-18.2-13-23.9-4.2-3.1-8.5-4.1-12.9-3.1-3.1.7-6.2 2.4-9.7 5-6.6 5.1-11.7 11.8-14.2 19-2.7 7.7-2.1 15.8 1.9 23.9.7 1.4.1 3.1-1.3 3.7-1.4.7-3.1.1-3.7-1.3-4.6-9.4-5.4-19.2-2.2-28.2 2.9-8.2 8.6-15.9 16.1-21.6 4.1-3.1 8-5.1 11.8-6 6-1.4 12 0 17.5 4C257.6 586.9 259.6 588.8 261.3 590.9z'/><circle cx='1013.7' cy='153.9' r='7.1'/><circle cx='1024.3' cy='132.1' r='7.1'/><circle cx='1037.3' cy='148.9' r='7.1'/><path d='M1508.7 297.2c-4.8-5.4-9.7-10.8-14.8-16.2 5.6-5.6 11.1-11.5 15.6-18.2 1.2-1.7.7-4.1-1-5.2-1.7-1.2-4.1-.7-5.2 1-4.2 6.2-9.1 11.6-14.5 16.9-4.8-5-9.7-10-14.7-14.9-1.5-1.5-3.9-1.5-5.3 0-1.5 1.5-1.5 3.9 0 5.3 4.9 4.8 9.7 9.8 14.5 14.8-1.1 1.1-2.3 2.2-3.5 3.2-4.1 3.8-8.4 7.8-12.4 12-1.4 1.5-1.4 3.8 0 5.3 0 0 0 0 0 0 1.5 1.4 3.9 1.4 5.3-.1 3.9-4 8.1-7.9 12.1-11.7 1.2-1.1 2.3-2.2 3.5-3.3 4.9 5.3 9.8 10.6 14.6 15.9.1.1.1.1.2.2 1.4 1.4 3.7 1.5 5.2.2C1510 301.2 1510.1 298.8 1508.7 297.2zM327.6 248.6l-.4-2.6c-1.5-11.1-2.2-23.2-2.3-37 0-5.5 0-11.5.2-18.5 0-.7 0-1.5 0-2.3 0-5 0-11.2 3.9-13.5 2.2-1.3 5.1-1 8.5.9 5.7 3.1 13.2 8.7 17.5 14.9 5.5 7.8 7.3 16.9 5 25.7-3.2 12.3-15 31-30 32.1L327.6 248.6zM332.1 179.2c-.2 0-.3 0-.4.1-.1.1-.7.5-1.1 2.7-.3 1.9-.3 4.2-.3 6.3 0 .8 0 1.7 0 2.4-.2 6.9-.2 12.8-.2 18.3.1 12.5.7 23.5 2 33.7 11-2.7 20.4-18.1 23-27.8 1.9-7.2.4-14.8-4.2-21.3l0 0C347 188.1 340 183 335 180.3 333.6 179.5 332.6 179.2 332.1 179.2zM516.3 60.8c-.1 0-.2 0-.4-.1-2.4-.7-4-.9-6.7-.7-.7 0-1.3-.5-1.4-1.2 0-.7.5-1.3 1.2-1.4 3.1-.2 4.9 0 7.6.8.7.2 1.1.9.9 1.6C517.3 60.4 516.8 60.8 516.3 60.8zM506.1 70.5c-.5 0-1-.3-1.2-.8-.8-2.1-1.2-4.3-1.3-6.6 0-.7.5-1.3 1.2-1.3.7 0 1.3.5 1.3 1.2.1 2 .5 3.9 1.1 5.8.2.7-.1 1.4-.8 1.6C506.4 70.5 506.2 70.5 506.1 70.5zM494.1 64.4c-.4 0-.8-.2-1-.5-.4-.6-.3-1.4.2-1.8 1.8-1.4 3.7-2.6 5.8-3.6.6-.3 1.4 0 1.7.6.3.6 0 1.4-.6 1.7-1.9.9-3.7 2-5.3 3.3C494.7 64.3 494.4 64.4 494.1 64.4zM500.5 55.3c-.5 0-.9-.3-1.2-.7-.5-1-1.2-1.9-2.4-3.4-.3-.4-.7-.9-1.1-1.4-.4-.6-.3-1.4.2-1.8.6-.4 1.4-.3 1.8.2.4.5.8 1 1.1 1.4 1.3 1.6 2.1 2.6 2.7 3.9.3.6 0 1.4-.6 1.7C500.9 55.3 500.7 55.3 500.5 55.3zM506.7 55c-.3 0-.5-.1-.8-.2-.6-.4-.7-1.2-.3-1.8 1.2-1.7 2.3-3.4 3.3-5.2.3-.6 1.1-.9 1.7-.5.6.3.9 1.1.5 1.7-1 1.9-2.2 3.8-3.5 5.6C507.4 54.8 507.1 55 506.7 55zM1029.3 382.8c-.1 0-.2 0-.4-.1-2.4-.7-4-.9-6.7-.7-.7 0-1.3-.5-1.4-1.2 0-.7.5-1.3 1.2-1.4 3.1-.2 4.9 0 7.6.8.7.2 1.1.9.9 1.6C1030.3 382.4 1029.8 382.8 1029.3 382.8zM1019.1 392.5c-.5 0-1-.3-1.2-.8-.8-2.1-1.2-4.3-1.3-6.6 0-.7.5-1.3 1.2-1.3.7 0 1.3.5 1.3 1.2.1 2 .5 3.9 1.1 5.8.2.7-.1 1.4-.8 1.6C1019.4 392.5 1019.2 392.5 1019.1 392.5zM1007.1 386.4c-.4 0-.8-.2-1-.5-.4-.6-.3-1.4.2-1.8 1.8-1.4 3.7-2.6 5.8-3.6.6-.3 1.4 0 1.7.6.3.6 0 1.4-.6 1.7-1.9.9-3.7 2-5.3 3.3C1007.7 386.3 1007.4 386.4 1007.1 386.4zM1013.5 377.3c-.5 0-.9-.3-1.2-.7-.5-1-1.2-1.9-2.4-3.4-.3-.4-.7-.9-1.1-1.4-.4-.6-.3-1.4.2-1.8.6-.4 1.4-.3 1.8.2.4.5.8 1 1.1 1.4 1.3 1.6 2.1 2.6 2.7 3.9.3.6 0 1.4-.6 1.7C1013.9 377.3 1013.7 377.3 1013.5 377.3zM1019.7 377c-.3 0-.5-.1-.8-.2-.6-.4-.7-1.2-.3-1.8 1.2-1.7 2.3-3.4 3.3-5.2.3-.6 1.1-.9 1.7-.5.6.3.9 1.1.5 1.7-1 1.9-2.2 3.8-3.5 5.6C1020.4 376.8 1020.1 377 1019.7 377zM1329.7 573.4c-1.4 0-2.9-.2-4.5-.7-8.4-2.7-16.6-12.7-18.7-20-.4-1.4-.7-2.9-.9-4.4-8.1 3.3-15.5 10.6-15.4 21 0 1.5-1.2 2.7-2.7 2.8 0 0 0 0 0 0-1.5 0-2.7-1.2-2.7-2.7-.1-6.7 2.4-12.9 7-18 3.6-4 8.4-7.1 13.7-8.8.5-6.5 3.1-12.9 7.4-17.4 7-7.4 18.2-8.9 27.3-10.1l.7-.1c1.5-.2 2.9.9 3.1 2.3.2 1.5-.9 2.9-2.3 3.1l-.7.1c-8.6 1.2-18.4 2.5-24 8.4-3 3.2-5 7.7-5.7 12.4 7.9-1 17.7 1.3 24.3 5.7 4.3 2.9 7.1 7.8 7.2 12.7.2 4.3-1.7 8.3-5.2 11.1C1335.2 572.4 1332.6 573.4 1329.7 573.4zM1311 546.7c.1 1.5.4 3 .8 4.4 1.7 5.8 8.7 14.2 15.1 16.3 2.8.9 5.1.5 7.2-1.1 2.7-2.1 3.2-4.8 3.1-6.6-.1-3.2-2-6.4-4.8-8.3C1326.7 547.5 1317.7 545.6 1311 546.7z'/></g></svg>
+                </div>
+                <div class="theme-option" data-theme="theme7">
+                    <svg xmlns='http://www.w3.org/2000/svg'  width='200' height='200' viewBox='0 0 200 200'><rect fill='#487346' width='200' height='200'/><g fill-opacity='1'><polygon  fill='#4c8e43' points='100 57.1 64 93.1 71.5 100.6 100 72.1'/><polygon  fill='#6aac5f' points='100 57.1 100 72.1 128.6 100.6 136.1 93.1'/><polygon  fill='#4c8e43' points='100 163.2 100 178.2 170.7 107.5 170.8 92.4'/><polygon  fill='#6aac5f' points='100 163.2 29.2 92.5 29.2 107.5 100 178.2'/><path  fill='#89CC7C' d='M100 21.8L29.2 92.5l70.7 70.7l70.7-70.7L100 21.8z M100 127.9L64.6 92.5L100 57.1l35.4 35.4L100 127.9z'/><polygon  fill='#768c3a' points='0 157.1 0 172.1 28.6 200.6 36.1 193.1'/><polygon  fill='#96ac58' points='70.7 200 70.8 192.4 63.2 200'/><polygon  fill='#B6CC76' points='27.8 200 63.2 200 70.7 192.5 0 121.8 0 157.2 35.3 192.5'/><polygon  fill='#96ac58' points='200 157.1 164 193.1 171.5 200.6 200 172.1'/><polygon  fill='#768c3a' points='136.7 200 129.2 192.5 129.2 200'/><polygon  fill='#B6CC76' points='172.1 200 164.6 192.5 200 157.1 200 157.2 200 121.8 200 121.8 129.2 192.5 136.7 200'/><polygon  fill='#768c3a' points='129.2 0 129.2 7.5 200 78.2 200 63.2 136.7 0'/><polygon  fill='#B6CC76' points='200 27.8 200 27.9 172.1 0 136.7 0 200 63.2 200 63.2'/><polygon  fill='#96ac58' points='63.2 0 0 63.2 0 78.2 70.7 7.5 70.7 0'/><polygon  fill='#B6CC76' points='0 63.2 63.2 0 27.8 0 0 27.8'/></g></svg>
+                </div>
+                <div class="theme-option" data-theme="theme8">
+                    <svg xmlns='http://www.w3.org/2000/svg'  width='600' height='100' viewBox='0 0 600 100'><rect fill='#ffffff' width='600' height='100'/><g  stroke='#FFF' stroke-width='0' stroke-miterlimit='10' stroke-opacity='1'><circle  fill='#037B79' cx='0' cy='0' r='50'/><circle  fill='#92DEBA' cx='100' cy='0' r='50'/><circle  fill='#FFFFD8' cx='200' cy='0' r='50'/><circle  fill='#CAF2FF' cx='300' cy='0' r='50'/><circle  fill='#6FCCFF' cx='400' cy='0' r='50'/><circle  fill='#006EB4' cx='500' cy='0' r='50'/><circle  fill='#037B79' cx='600' cy='0' r='50'/><circle cx='-50' cy='50' r='50'/><circle  fill='#53ac9a' cx='50' cy='50' r='50'/><circle  fill='#ceefc1' cx='150' cy='50' r='50'/><circle  fill='#ffffff' cx='250' cy='50' r='50'/><circle  fill='#9de0fe' cx='350' cy='50' r='50'/><circle  fill='#3e9cda' cx='450' cy='50' r='50'/><circle  fill='#00789c' cx='550' cy='50' r='50'/><circle cx='650' cy='50' r='50'/><circle  fill='#037B79' cx='0' cy='100' r='50'/><circle  fill='#92DEBA' cx='100' cy='100' r='50'/><circle  fill='#FFFFD8' cx='200' cy='100' r='50'/><circle  fill='#CAF2FF' cx='300' cy='100' r='50'/><circle  fill='#6FCCFF' cx='400' cy='100' r='50'/><circle  fill='#006EB4' cx='500' cy='100' r='50'/><circle  fill='#037B79' cx='600' cy='100' r='50'/><circle cx='50' cy='150' r='50'/><circle cx='150' cy='150' r='50'/><circle cx='250' cy='150' r='50'/><circle cx='350' cy='150' r='50'/><circle cx='450' cy='150' r='50'/><circle cx='550' cy='150' r='50'/></g></svg>
+                </div>
+                <div class="theme-option" data-theme="theme9">
+                    <svg xmlns='http://www.w3.org/2000/svg'  width='400' height='400' viewBox='0 0 800 800'><rect fill='#330033' width='800' height='800'/><g fill='none' stroke='#404'  stroke-width='1'><path d='M769 229L1037 260.9M927 880L731 737 520 660 309 538 40 599 295 764 126.5 879.5 40 599-197 493 102 382-31 229 126.5 79.5-69-63'/><path d='M-31 229L237 261 390 382 603 493 308.5 537.5 101.5 381.5M370 905L295 764'/><path d='M520 660L578 842 731 737 840 599 603 493 520 660 295 764 309 538 390 382 539 269 769 229 577.5 41.5 370 105 295 -36 126.5 79.5 237 261 102 382 40 599 -69 737 127 880'/><path d='M520-140L578.5 42.5 731-63M603 493L539 269 237 261 370 105M902 382L539 269M390 382L102 382'/><path d='M-222 42L126.5 79.5 370 105 539 269 577.5 41.5 927 80 769 229 902 382 603 493 731 737M295-36L577.5 41.5M578 842L295 764M40-201L127 80M102 382L-261 269'/></g><g  fill='#505'><circle  cx='769' cy='229' r='5'/><circle  cx='539' cy='269' r='5'/><circle  cx='603' cy='493' r='5'/><circle  cx='731' cy='737' r='5'/><circle  cx='520' cy='660' r='5'/><circle  cx='309' cy='538' r='5'/><circle  cx='295' cy='764' r='5'/><circle  cx='40' cy='599' r='5'/><circle  cx='102' cy='382' r='5'/><circle  cx='127' cy='80' r='5'/><circle  cx='370' cy='105' r='5'/><circle  cx='578' cy='42' r='5'/><circle  cx='237' cy='261' r='5'/><circle  cx='390' cy='382' r='5'/></g></svg>
+                </div>
+                <div class="theme-option" data-theme="theme10">
+                    <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.dev/svgjs" viewBox="0 0 800 800"><g><circle r="42.5" cx="0" cy="0" fill="hsl(250, 75%, 50%)"></circle><circle r="42.5" cx="0" cy="85" fill="hsl(261, 75%, 50%)"></circle><circle r="42.5" cx="0" cy="170" fill="hsl(282, 75%, 50%)"></circle><circle r="42.5" cx="0" cy="255" fill="hsl(299, 75%, 50%)"></circle><circle r="42.5" cx="0" cy="340" fill="hsl(305, 75%, 50%)"></circle><circle r="42.5" cx="0" cy="425" fill="hsl(313, 75%, 50%)"></circle><circle r="42.5" cx="0" cy="510" fill="hsl(316, 75%, 50%)"></circle><circle r="42.5" cx="0" cy="595" fill="hsl(315, 75%, 50%)"></circle><circle r="42.5" cx="0" cy="680" fill="hsl(311, 75%, 50%)"></circle><circle r="42.5" cx="0" cy="765" fill="hsl(303, 75%, 50%)"></circle><circle r="42.5" cx="0" cy="850" fill="hsl(303, 75%, 50%)"></circle><circle r="42.5" cx="85" cy="0" fill="hsl(261, 75%, 50%)"></circle><circle r="42.5" cx="85" cy="85" fill="hsl(272, 75%, 50%)"></circle><circle r="42.5" cx="85" cy="170" fill="hsl(292, 75%, 50%)"></circle><circle r="42.5" cx="85" cy="255" fill="hsl(308, 75%, 50%)"></circle><circle r="42.5" cx="85" cy="340" fill="hsl(314, 75%, 50%)"></circle><circle r="42.5" cx="85" cy="425" fill="hsl(321, 75%, 50%)"></circle><circle r="42.5" cx="85" cy="510" fill="hsl(321, 75%, 50%)"></circle><circle r="42.5" cx="85" cy="595" fill="hsl(320, 75%, 50%)"></circle><circle r="42.5" cx="85" cy="680" fill="hsl(313, 75%, 50%)"></circle><circle r="42.5" cx="85" cy="765" fill="hsl(304, 75%, 50%)"></circle><circle r="42.5" cx="85" cy="850" fill="hsl(304, 75%, 50%)"></circle><circle r="42.5" cx="170" cy="0" fill="hsl(282, 75%, 50%)"></circle><circle r="42.5" cx="170" cy="85" fill="hsl(292, 75%, 50%)"></circle><circle r="42.5" cx="170" cy="170" fill="hsl(311, 75%, 50%)"></circle><circle r="42.5" cx="170" cy="255" fill="hsl(324, 75%, 50%)"></circle><circle r="42.5" cx="170" cy="340" fill="hsl(329, 75%, 50%)"></circle><circle r="42.5" cx="170" cy="425" fill="hsl(333, 75%, 50%)"></circle><circle r="42.5" cx="170" cy="510" fill="hsl(331, 75%, 50%)"></circle><circle r="42.5" cx="170" cy="595" fill="hsl(328, 75%, 50%)"></circle><circle r="42.5" cx="170" cy="680" fill="hsl(319, 75%, 50%)"></circle><circle r="42.5" cx="170" cy="765" fill="hsl(307, 75%, 50%)"></circle><circle r="42.5" cx="170" cy="850" fill="hsl(307, 75%, 50%)"></circle><circle r="42.5" cx="255" cy="0" fill="hsl(299, 75%, 50%)"></circle><circle r="42.5" cx="255" cy="85" fill="hsl(308, 75%, 50%)"></circle><circle r="42.5" cx="255" cy="170" fill="hsl(324, 75%, 50%)"></circle><circle r="42.5" cx="255" cy="255" fill="hsl(336, 75%, 50%)"></circle><circle r="42.5" cx="255" cy="340" fill="hsl(339, 75%, 50%)"></circle><circle r="42.5" cx="255" cy="425" fill="hsl(341, 75%, 50%)"></circle><circle r="42.5" cx="255" cy="510" fill="hsl(337, 75%, 50%)"></circle><circle r="42.5" cx="255" cy="595" fill="hsl(333, 75%, 50%)"></circle><circle r="42.5" cx="255" cy="680" fill="hsl(324, 75%, 50%)"></circle><circle r="42.5" cx="255" cy="765" fill="hsl(312, 75%, 50%)"></circle><circle r="42.5" cx="255" cy="850" fill="hsl(312, 75%, 50%)"></circle><circle r="42.5" cx="340" cy="0" fill="hsl(305, 75%, 50%)"></circle><circle r="42.5" cx="340" cy="85" fill="hsl(314, 75%, 50%)"></circle><circle r="42.5" cx="340" cy="170" fill="hsl(329, 75%, 50%)"></circle><circle r="42.5" cx="340" cy="255" fill="hsl(339, 75%, 50%)"></circle><circle r="42.5" cx="340" cy="340" fill="hsl(341, 75%, 50%)"></circle><circle r="42.5" cx="340" cy="425" fill="hsl(343, 75%, 50%)"></circle><circle r="42.5" cx="340" cy="510" fill="hsl(338, 75%, 50%)"></circle><circle r="42.5" cx="340" cy="595" fill="hsl(335, 75%, 50%)"></circle><circle r="42.5" cx="340" cy="680" fill="hsl(325, 75%, 50%)"></circle><circle r="42.5" cx="340" cy="765" fill="hsl(314, 75%, 50%)"></circle><circle r="42.5" cx="340" cy="850" fill="hsl(314, 75%, 50%)"></circle><circle r="42.5" cx="425" cy="0" fill="hsl(314, 75%, 50%)"></circle><circle r="42.5" cx="425" cy="85" fill="hsl(321, 75%, 50%)"></circle><circle r="42.5" cx="425" cy="170" fill="hsl(333, 75%, 50%)"></circle><circle r="42.5" cx="425" cy="255" fill="hsl(340, 75%, 50%)"></circle><circle r="42.5" cx="425" cy="340" fill="hsl(342, 75%, 50%)"></circle><circle r="42.5" cx="425" cy="425" fill="hsl(342, 75%, 50%)"></circle><circle r="42.5" cx="425" cy="510" fill="hsl(338, 75%, 50%)"></circle><circle r="42.5" cx="425" cy="595" fill="hsl(335, 75%, 50%)"></circle><circle r="42.5" cx="425" cy="680" fill="hsl(327, 75%, 50%)"></circle><circle r="42.5" cx="425" cy="765" fill="hsl(317, 75%, 50%)"></circle><circle r="42.5" cx="425" cy="850" fill="hsl(317, 75%, 50%)"></circle><circle r="42.5" cx="510" cy="0" fill="hsl(317, 75%, 50%)"></circle><circle r="42.5" cx="510" cy="85" fill="hsl(322, 75%, 50%)"></circle><circle r="42.5" cx="510" cy="170" fill="hsl(331, 75%, 50%)"></circle><circle r="42.5" cx="510" cy="255" fill="hsl(336, 75%, 50%)"></circle><circle r="42.5" cx="510" cy="340" fill="hsl(337, 75%, 50%)"></circle><circle r="42.5" cx="510" cy="425" fill="hsl(337, 75%, 50%)"></circle><circle r="42.5" cx="510" cy="510" fill="hsl(333, 75%, 50%)"></circle><circle r="42.5" cx="510" cy="595" fill="hsl(331, 75%, 50%)"></circle><circle r="42.5" cx="510" cy="680" fill="hsl(324, 75%, 50%)"></circle><circle r="42.5" cx="510" cy="765" fill="hsl(318, 75%, 50%)"></circle><circle r="42.5" cx="510" cy="850" fill="hsl(318, 75%, 50%)"></circle><circle r="42.5" cx="595" cy="0" fill="hsl(317, 75%, 50%)"></circle><circle r="42.5" cx="595" cy="85" fill="hsl(322, 75%, 50%)"></circle><circle r="42.5" cx="595" cy="170" fill="hsl(328, 75%, 50%)"></circle><circle r="42.5" cx="595" cy="255" fill="hsl(332, 75%, 50%)"></circle><circle r="42.5" cx="595" cy="340" fill="hsl(333, 75%, 50%)"></circle><circle r="42.5" cx="595" cy="425" fill="hsl(332, 75%, 50%)"></circle><circle r="42.5" cx="595" cy="510" fill="hsl(329, 75%, 50%)"></circle><circle r="42.5" cx="595" cy="595" fill="hsl(327, 75%, 50%)"></circle><circle r="42.5" cx="595" cy="680" fill="hsl(322, 75%, 50%)"></circle><circle r="42.5" cx="595" cy="765" fill="hsl(317, 75%, 50%)"></circle><circle r="42.5" cx="595" cy="850" fill="hsl(317, 75%, 50%)"></circle><circle r="42.5" cx="680" cy="0" fill="hsl(316, 75%, 50%)"></circle><circle r="42.5" cx="680" cy="85" fill="hsl(318, 75%, 50%)"></circle><circle r="42.5" cx="680" cy="170" fill="hsl(320, 75%, 50%)"></circle><circle r="42.5" cx="680" cy="255" fill="hsl(321, 75%, 50%)"></circle><circle r="42.5" cx="680" cy="340" fill="hsl(321, 75%, 50%)"></circle><circle r="42.5" cx="680" cy="425" fill="hsl(320, 75%, 50%)"></circle><circle r="42.5" cx="680" cy="510" fill="hsl(318, 75%, 50%)"></circle><circle r="42.5" cx="680" cy="595" fill="hsl(317, 75%, 50%)"></circle><circle r="42.5" cx="680" cy="680" fill="hsl(314, 75%, 50%)"></circle><circle r="42.5" cx="680" cy="765" fill="hsl(312, 75%, 50%)"></circle><circle r="42.5" cx="680" cy="850" fill="hsl(312, 75%, 50%)"></circle><circle r="42.5" cx="765" cy="0" fill="hsl(312, 75%, 50%)"></circle><circle r="42.5" cx="765" cy="85" fill="hsl(312, 75%, 50%)"></circle><circle r="42.5" cx="765" cy="170" fill="hsl(311, 75%, 50%)"></circle><circle r="42.5" cx="765" cy="255" fill="hsl(309, 75%, 50%)"></circle><circle r="42.5" cx="765" cy="340" fill="hsl(308, 75%, 50%)"></circle><circle r="42.5" cx="765" cy="425" fill="hsl(306, 75%, 50%)"></circle><circle r="42.5" cx="765" cy="510" fill="hsl(304, 75%, 50%)"></circle><circle r="42.5" cx="765" cy="595" fill="hsl(303, 75%, 50%)"></circle><circle r="42.5" cx="765" cy="680" fill="hsl(303, 75%, 50%)"></circle><circle r="42.5" cx="765" cy="765" fill="hsl(304, 75%, 50%)"></circle><circle r="42.5" cx="765" cy="850" fill="hsl(304, 75%, 50%)"></circle><circle r="42.5" cx="850" cy="0" fill="hsl(312, 75%, 50%)"></circle><circle r="42.5" cx="850" cy="85" fill="hsl(312, 75%, 50%)"></circle><circle r="42.5" cx="850" cy="170" fill="hsl(311, 75%, 50%)"></circle><circle r="42.5" cx="850" cy="255" fill="hsl(309, 75%, 50%)"></circle><circle r="42.5" cx="850" cy="340" fill="hsl(308, 75%, 50%)"></circle><circle r="42.5" cx="850" cy="425" fill="hsl(306, 75%, 50%)"></circle><circle r="42.5" cx="850" cy="510" fill="hsl(304, 75%, 50%)"></circle><circle r="42.5" cx="850" cy="595" fill="hsl(303, 75%, 50%)"></circle><circle r="42.5" cx="850" cy="680" fill="hsl(303, 75%, 50%)"></circle><circle r="42.5" cx="850" cy="765" fill="hsl(304, 75%, 50%)"></circle><circle r="42.5" cx="850" cy="850" fill="hsl(304, 75%, 50%)"></circle><circle r="42.5" cx="935" cy="0" fill="hsl(312, 75%, 50%)"></circle><circle r="42.5" cx="935" cy="85" fill="hsl(312, 75%, 50%)"></circle><circle r="42.5" cx="935" cy="170" fill="hsl(311, 75%, 50%)"></circle><circle r="42.5" cx="935" cy="255" fill="hsl(309, 75%, 50%)"></circle><circle r="42.5" cx="935" cy="340" fill="hsl(308, 75%, 50%)"></circle><circle r="42.5" cx="935" cy="425" fill="hsl(306, 75%, 50%)"></circle><circle r="42.5" cx="935" cy="510" fill="hsl(304, 75%, 50%)"></circle><circle r="42.5" cx="935" cy="595" fill="hsl(303, 75%, 50%)"></circle><circle r="42.5" cx="935" cy="680" fill="hsl(303, 75%, 50%)"></circle><circle r="42.5" cx="935" cy="765" fill="hsl(304, 75%, 50%)"></circle><circle r="42.5" cx="935" cy="850" fill="hsl(304, 75%, 50%)"></circle></g><g transform="matrix(1,0,0,1,-42.5,0)"><circle r="42.5" cx="0" cy="42.5" fill="hsl(250, 75%, 50%)"></circle><circle r="42.5" cx="0" cy="127.5" fill="hsl(272, 75%, 50%)"></circle><circle r="42.5" cx="0" cy="212.5" fill="hsl(291, 75%, 50%)"></circle><circle r="42.5" cx="0" cy="297.5" fill="hsl(299, 75%, 50%)"></circle><circle r="42.5" cx="0" cy="382.5" fill="hsl(310, 75%, 50%)"></circle><circle r="42.5" cx="0" cy="467.5" fill="hsl(315, 75%, 50%)"></circle><circle r="42.5" cx="0" cy="552.5" fill="hsl(315, 75%, 50%)"></circle><circle r="42.5" cx="0" cy="637.5" fill="hsl(313, 75%, 50%)"></circle><circle r="42.5" cx="0" cy="722.5" fill="hsl(307, 75%, 50%)"></circle><circle r="42.5" cx="0" cy="807.5" fill="hsl(303, 75%, 50%)"></circle><circle r="42.5" cx="0" cy="892.5" fill="hsl(303, 75%, 50%)"></circle><circle r="42.5" cx="85" cy="42.5" fill="hsl(261, 75%, 50%)"></circle><circle r="42.5" cx="85" cy="127.5" fill="hsl(283, 75%, 50%)"></circle><circle r="42.5" cx="85" cy="212.5" fill="hsl(301, 75%, 50%)"></circle><circle r="42.5" cx="85" cy="297.5" fill="hsl(308, 75%, 50%)"></circle><circle r="42.5" cx="85" cy="382.5" fill="hsl(318, 75%, 50%)"></circle><circle r="42.5" cx="85" cy="467.5" fill="hsl(322, 75%, 50%)"></circle><circle r="42.5" cx="85" cy="552.5" fill="hsl(320, 75%, 50%)"></circle><circle r="42.5" cx="85" cy="637.5" fill="hsl(317, 75%, 50%)"></circle><circle r="42.5" cx="85" cy="722.5" fill="hsl(309, 75%, 50%)"></circle><circle r="42.5" cx="85" cy="807.5" fill="hsl(304, 75%, 50%)"></circle><circle r="42.5" cx="85" cy="892.5" fill="hsl(304, 75%, 50%)"></circle><circle r="42.5" cx="170" cy="42.5" fill="hsl(282, 75%, 50%)"></circle><circle r="42.5" cx="170" cy="127.5" fill="hsl(302, 75%, 50%)"></circle><circle r="42.5" cx="170" cy="212.5" fill="hsl(318, 75%, 50%)"></circle><circle r="42.5" cx="170" cy="297.5" fill="hsl(324, 75%, 50%)"></circle><circle r="42.5" cx="170" cy="382.5" fill="hsl(332, 75%, 50%)"></circle><circle r="42.5" cx="170" cy="467.5" fill="hsl(333, 75%, 50%)"></circle><circle r="42.5" cx="170" cy="552.5" fill="hsl(328, 75%, 50%)"></circle><circle r="42.5" cx="170" cy="637.5" fill="hsl(324, 75%, 50%)"></circle><circle r="42.5" cx="170" cy="722.5" fill="hsl(313, 75%, 50%)"></circle><circle r="42.5" cx="170" cy="807.5" fill="hsl(307, 75%, 50%)"></circle><circle r="42.5" cx="170" cy="892.5" fill="hsl(307, 75%, 50%)"></circle><circle r="42.5" cx="255" cy="42.5" fill="hsl(299, 75%, 50%)"></circle><circle r="42.5" cx="255" cy="127.5" fill="hsl(317, 75%, 50%)"></circle><circle r="42.5" cx="255" cy="212.5" fill="hsl(331, 75%, 50%)"></circle><circle r="42.5" cx="255" cy="297.5" fill="hsl(336, 75%, 50%)"></circle><circle r="42.5" cx="255" cy="382.5" fill="hsl(340, 75%, 50%)"></circle><circle r="42.5" cx="255" cy="467.5" fill="hsl(339, 75%, 50%)"></circle><circle r="42.5" cx="255" cy="552.5" fill="hsl(333, 75%, 50%)"></circle><circle r="42.5" cx="255" cy="637.5" fill="hsl(329, 75%, 50%)"></circle><circle r="42.5" cx="255" cy="722.5" fill="hsl(318, 75%, 50%)"></circle><circle r="42.5" cx="255" cy="807.5" fill="hsl(312, 75%, 50%)"></circle><circle r="42.5" cx="255" cy="892.5" fill="hsl(312, 75%, 50%)"></circle><circle r="42.5" cx="340" cy="42.5" fill="hsl(305, 75%, 50%)"></circle><circle r="42.5" cx="340" cy="127.5" fill="hsl(322, 75%, 50%)"></circle><circle r="42.5" cx="340" cy="212.5" fill="hsl(335, 75%, 50%)"></circle><circle r="42.5" cx="340" cy="297.5" fill="hsl(339, 75%, 50%)"></circle><circle r="42.5" cx="340" cy="382.5" fill="hsl(343, 75%, 50%)"></circle><circle r="42.5" cx="340" cy="467.5" fill="hsl(341, 75%, 50%)"></circle><circle r="42.5" cx="340" cy="552.5" fill="hsl(335, 75%, 50%)"></circle><circle r="42.5" cx="340" cy="637.5" fill="hsl(330, 75%, 50%)"></circle><circle r="42.5" cx="340" cy="722.5" fill="hsl(320, 75%, 50%)"></circle><circle r="42.5" cx="340" cy="807.5" fill="hsl(314, 75%, 50%)"></circle><circle r="42.5" cx="340" cy="892.5" fill="hsl(314, 75%, 50%)"></circle><circle r="42.5" cx="425" cy="42.5" fill="hsl(314, 75%, 50%)"></circle><circle r="42.5" cx="425" cy="127.5" fill="hsl(327, 75%, 50%)"></circle><circle r="42.5" cx="425" cy="212.5" fill="hsl(337, 75%, 50%)"></circle><circle r="42.5" cx="425" cy="297.5" fill="hsl(340, 75%, 50%)"></circle><circle r="42.5" cx="425" cy="382.5" fill="hsl(343, 75%, 50%)"></circle><circle r="42.5" cx="425" cy="467.5" fill="hsl(341, 75%, 50%)"></circle><circle r="42.5" cx="425" cy="552.5" fill="hsl(335, 75%, 50%)"></circle><circle r="42.5" cx="425" cy="637.5" fill="hsl(331, 75%, 50%)"></circle><circle r="42.5" cx="425" cy="722.5" fill="hsl(322, 75%, 50%)"></circle><circle r="42.5" cx="425" cy="807.5" fill="hsl(317, 75%, 50%)"></circle><circle r="42.5" cx="425" cy="892.5" fill="hsl(317, 75%, 50%)"></circle><circle r="42.5" cx="510" cy="42.5" fill="hsl(317, 75%, 50%)"></circle><circle r="42.5" cx="510" cy="127.5" fill="hsl(327, 75%, 50%)"></circle><circle r="42.5" cx="510" cy="212.5" fill="hsl(334, 75%, 50%)"></circle><circle r="42.5" cx="510" cy="297.5" fill="hsl(336, 75%, 50%)"></circle><circle r="42.5" cx="510" cy="382.5" fill="hsl(337, 75%, 50%)"></circle><circle r="42.5" cx="510" cy="467.5" fill="hsl(335, 75%, 50%)"></circle><circle r="42.5" cx="510" cy="552.5" fill="hsl(331, 75%, 50%)"></circle><circle r="42.5" cx="510" cy="637.5" fill="hsl(328, 75%, 50%)"></circle><circle r="42.5" cx="510" cy="722.5" fill="hsl(321, 75%, 50%)"></circle><circle r="42.5" cx="510" cy="807.5" fill="hsl(318, 75%, 50%)"></circle><circle r="42.5" cx="510" cy="892.5" fill="hsl(318, 75%, 50%)"></circle><circle r="42.5" cx="595" cy="42.5" fill="hsl(317, 75%, 50%)"></circle><circle r="42.5" cx="595" cy="127.5" fill="hsl(325, 75%, 50%)"></circle><circle r="42.5" cx="595" cy="212.5" fill="hsl(330, 75%, 50%)"></circle><circle r="42.5" cx="595" cy="297.5" fill="hsl(332, 75%, 50%)"></circle><circle r="42.5" cx="595" cy="382.5" fill="hsl(333, 75%, 50%)"></circle><circle r="42.5" cx="595" cy="467.5" fill="hsl(331, 75%, 50%)"></circle><circle r="42.5" cx="595" cy="552.5" fill="hsl(327, 75%, 50%)"></circle><circle r="42.5" cx="595" cy="637.5" fill="hsl(325, 75%, 50%)"></circle><circle r="42.5" cx="595" cy="722.5" fill="hsl(319, 75%, 50%)"></circle><circle r="42.5" cx="595" cy="807.5" fill="hsl(317, 75%, 50%)"></circle><circle r="42.5" cx="595" cy="892.5" fill="hsl(317, 75%, 50%)"></circle><circle r="42.5" cx="680" cy="42.5" fill="hsl(316, 75%, 50%)"></circle><circle r="42.5" cx="680" cy="127.5" fill="hsl(319, 75%, 50%)"></circle><circle r="42.5" cx="680" cy="212.5" fill="hsl(321, 75%, 50%)"></circle><circle r="42.5" cx="680" cy="297.5" fill="hsl(321, 75%, 50%)"></circle><circle r="42.5" cx="680" cy="382.5" fill="hsl(321, 75%, 50%)"></circle><circle r="42.5" cx="680" cy="467.5" fill="hsl(319, 75%, 50%)"></circle><circle r="42.5" cx="680" cy="552.5" fill="hsl(317, 75%, 50%)"></circle><circle r="42.5" cx="680" cy="637.5" fill="hsl(315, 75%, 50%)"></circle><circle r="42.5" cx="680" cy="722.5" fill="hsl(313, 75%, 50%)"></circle><circle r="42.5" cx="680" cy="807.5" fill="hsl(312, 75%, 50%)"></circle><circle r="42.5" cx="680" cy="892.5" fill="hsl(312, 75%, 50%)"></circle><circle r="42.5" cx="765" cy="42.5" fill="hsl(312, 75%, 50%)"></circle><circle r="42.5" cx="765" cy="127.5" fill="hsl(312, 75%, 50%)"></circle><circle r="42.5" cx="765" cy="212.5" fill="hsl(310, 75%, 50%)"></circle><circle r="42.5" cx="765" cy="297.5" fill="hsl(309, 75%, 50%)"></circle><circle r="42.5" cx="765" cy="382.5" fill="hsl(307, 75%, 50%)"></circle><circle r="42.5" cx="765" cy="467.5" fill="hsl(305, 75%, 50%)"></circle><circle r="42.5" cx="765" cy="552.5" fill="hsl(303, 75%, 50%)"></circle><circle r="42.5" cx="765" cy="637.5" fill="hsl(303, 75%, 50%)"></circle><circle r="42.5" cx="765" cy="722.5" fill="hsl(303, 75%, 50%)"></circle><circle r="42.5" cx="765" cy="807.5" fill="hsl(304, 75%, 50%)"></circle><circle r="42.5" cx="765" cy="892.5" fill="hsl(304, 75%, 50%)"></circle><circle r="42.5" cx="850" cy="42.5" fill="hsl(312, 75%, 50%)"></circle><circle r="42.5" cx="850" cy="127.5" fill="hsl(312, 75%, 50%)"></circle><circle r="42.5" cx="850" cy="212.5" fill="hsl(310, 75%, 50%)"></circle><circle r="42.5" cx="850" cy="297.5" fill="hsl(309, 75%, 50%)"></circle><circle r="42.5" cx="850" cy="382.5" fill="hsl(307, 75%, 50%)"></circle><circle r="42.5" cx="850" cy="467.5" fill="hsl(305, 75%, 50%)"></circle><circle r="42.5" cx="850" cy="552.5" fill="hsl(303, 75%, 50%)"></circle><circle r="42.5" cx="850" cy="637.5" fill="hsl(303, 75%, 50%)"></circle><circle r="42.5" cx="850" cy="722.5" fill="hsl(303, 75%, 50%)"></circle><circle r="42.5" cx="850" cy="807.5" fill="hsl(304, 75%, 50%)"></circle><circle r="42.5" cx="850" cy="892.5" fill="hsl(304, 75%, 50%)"></circle><circle r="42.5" cx="935" cy="42.5" fill="hsl(312, 75%, 50%)"></circle><circle r="42.5" cx="935" cy="127.5" fill="hsl(312, 75%, 50%)"></circle><circle r="42.5" cx="935" cy="212.5" fill="hsl(310, 75%, 50%)"></circle><circle r="42.5" cx="935" cy="297.5" fill="hsl(309, 75%, 50%)"></circle><circle r="42.5" cx="935" cy="382.5" fill="hsl(307, 75%, 50%)"></circle><circle r="42.5" cx="935" cy="467.5" fill="hsl(305, 75%, 50%)"></circle><circle r="42.5" cx="935" cy="552.5" fill="hsl(303, 75%, 50%)"></circle><circle r="42.5" cx="935" cy="637.5" fill="hsl(303, 75%, 50%)"></circle><circle r="42.5" cx="935" cy="722.5" fill="hsl(303, 75%, 50%)"></circle><circle r="42.5" cx="935" cy="807.5" fill="hsl(304, 75%, 50%)"></circle><circle r="42.5" cx="935" cy="892.5" fill="hsl(304, 75%, 50%)"></circle></g></svg>
+                </div>
+                <div class="theme-option" data-theme="theme11">
+                    <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.dev/svgjs" viewBox="0 0 700 700" width="700" height="700"><defs><linearGradient gradientTransform="rotate(150, 0.5, 0.5)" x1="50%" y1="0%" x2="50%" y2="100%" id="ffflux-gradient"><stop stop-color="hsl(315, 100%, 72%)" stop-opacity="1" offset="0%"></stop><stop stop-color="hsl(227, 100%, 50%)" stop-opacity="1" offset="100%"></stop></linearGradient><filter id="ffflux-filter" x="-20%" y="-20%" width="140%" height="140%" filterUnits="objectBoundingBox" primitiveUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+                        <feTurbulence type="fractalNoise" baseFrequency="0.005 0.003" numOctaves="2" seed="2" stitchTiles="stitch" x="0%" y="0%" width="100%" height="100%" result="turbulence"></feTurbulence>
+                        <feGaussianBlur stdDeviation="20 0" x="0%" y="0%" width="100%" height="100%" in="turbulence" edgeMode="duplicate" result="blur"></feGaussianBlur>
+                        <feBlend mode="color-dodge" x="0%" y="0%" width="100%" height="100%" in="SourceGraphic" in2="blur" result="blend"></feBlend>
+                        
+                      </filter></defs><rect width="700" height="700" fill="url(#ffflux-gradient)" filter="url(#ffflux-filter)"></rect></svg>
+                </div>
+                <div class="theme-option" data-theme="theme12">
+                    <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.dev/svgjs" viewBox="0 0 700 700" width="700" height="700"><defs><linearGradient gradientTransform="rotate(-150, 0.5, 0.5)" x1="50%" y1="0%" x2="50%" y2="100%" id="gggrain-gradient2"><stop stop-color="hsl(194, 83%, 49%)" stop-opacity="1" offset="-0%"></stop><stop stop-color="rgba(255,255,255,0)" stop-opacity="0" offset="100%"></stop></linearGradient><linearGradient gradientTransform="rotate(150, 0.5, 0.5)" x1="50%" y1="0%" x2="50%" y2="100%" id="gggrain-gradient3"><stop stop-color="hsl(227, 100%, 50%)" stop-opacity="1"></stop><stop stop-color="rgba(255,255,255,0)" stop-opacity="0" offset="100%"></stop></linearGradient><filter id="gggrain-filter" x="-20%" y="-20%" width="140%" height="140%" filterUnits="objectBoundingBox" primitiveUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+                        <feTurbulence type="fractalNoise" baseFrequency="0.55" numOctaves="2" seed="2" stitchTiles="stitch" x="0%" y="0%" width="100%" height="100%" result="turbulence"></feTurbulence>
+                        <feColorMatrix type="saturate" values="0" x="0%" y="0%" width="100%" height="100%" in="turbulence" result="colormatrix"></feColorMatrix>
+                        <feComponentTransfer x="0%" y="0%" width="100%" height="100%" in="colormatrix" result="componentTransfer">
+                          <feFuncR type="linear" slope="3"></feFuncR>
+                          <feFuncG type="linear" slope="3"></feFuncG>
+                          <feFuncB type="linear" slope="3"></feFuncB>
+                        </feComponentTransfer>
+                        <feColorMatrix x="0%" y="0%" width="100%" height="100%" in="componentTransfer" result="colormatrix2" type="matrix" values="1 0 0 0 0
+                                0 1 0 0 0
+                                0 0 1 0 0
+                                0 0 0 19 -11"></feColorMatrix>
+                        </filter></defs><g><rect width="100%" height="100%" fill="hsl(0, 100%, 60%)"></rect><rect width="100%" height="100%" fill="url(#gggrain-gradient3)"></rect><rect width="100%" height="100%" fill="url(#gggrain-gradient2)"></rect><rect width="100%" height="100%" fill="transparent" filter="url(#gggrain-filter)" opacity="1" style="mix-blend-mode: soft-light"></rect></g></svg>
+                </div>
+                <div class="theme-option" data-theme="theme13">
+                    <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.dev/svgjs" viewBox="0 0 1422 800" width="1422" height="800"><defs><pattern id="mmmotif-pattern" width="40" height="40" patternUnits="userSpaceOnUse" patternTransform="translate(0 0) scale(1) rotate(45) skewX(0) skewY(0)">
+                        <rect width="11.3638" height="11.3638" transform="matrix(0.872008 0.489492 -0.872008 0.489492 20.0005 16.4375)" fill="hsl(212, 91%, 55%)"></rect>
+                        <rect width="11.3638" height="6" transform="matrix(0.872008 0.489492 0 1 10.0908 22)" fill="#70b4ff"></rect>
+                        <rect width="11.3638" height="6" transform="matrix(0.872008 -0.489492 0 1 20 27.5625)" fill="#0059c1"></rect>
+                        <rect width="11.3638" height="11.3638" transform="matrix(0.872008 0.489492 -0.872008 0.489492 20.0005 6.4375)" fill="hsl(212, 91%, 55%)"></rect>
+                        <rect width="11.3638" height="6" transform="matrix(0.872008 0.489492 0 1 10.0908 12)" fill="#70b4ff"></rect>
+                        <rect width="11.3638" height="6" transform="matrix(0.872008 -0.489492 0 1 20 17.5625)" fill="#0059c1"></rect>
+                    </pattern></defs><rect width="1422" height="800" fill="url(#mmmotif-pattern)"></rect></svg>
+                </div>
+                <div class="theme-option" data-theme="theme14">
+                   <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.dev/svgjs" viewBox="0 0 2400 800"><defs><linearGradient x1="50%" y1="0%" x2="50%" y2="100%" id="sssurf-grad"><stop stop-color="hsl(162, 100%, 58%)" stop-opacity="1" offset="0%"></stop><stop stop-color="hsl(270, 73%, 53%)" stop-opacity="1" offset="100%"></stop></linearGradient></defs><g fill="url(#sssurf-grad)" transform="matrix(1,0,0,1,0,-94.45742797851562)"><path d="M 0 320.6958772658832 Q 450 569.2734214622012 600 308.91482335243506 Q 1050 567.4081846285463 1200 330.18377799809383 Q 1650 540.0996009589531 1800 318.5057977574695 Q 2250 464.99850150362033 2400 342.52862302682877 L 2400 800 L 0 800 L 0 343.47424665834393 Z" transform="matrix(1,0,0,1,0,35)" opacity="0.05"></path><path d="M 0 320.6958772658832 Q 450 569.2734214622012 600 308.91482335243506 Q 1050 567.4081846285463 1200 330.18377799809383 Q 1650 540.0996009589531 1800 318.5057977574695 Q 2250 464.99850150362033 2400 342.52862302682877 L 2400 800 L 0 800 L 0 343.47424665834393 Z" transform="matrix(1,0,0,1,0,70)" opacity="0.21"></path><path d="M 0 320.6958772658832 Q 450 569.2734214622012 600 308.91482335243506 Q 1050 567.4081846285463 1200 330.18377799809383 Q 1650 540.0996009589531 1800 318.5057977574695 Q 2250 464.99850150362033 2400 342.52862302682877 L 2400 800 L 0 800 L 0 343.47424665834393 Z" transform="matrix(1,0,0,1,0,105)" opacity="0.37"></path><path d="M 0 320.6958772658832 Q 450 569.2734214622012 600 308.91482335243506 Q 1050 567.4081846285463 1200 330.18377799809383 Q 1650 540.0996009589531 1800 318.5057977574695 Q 2250 464.99850150362033 2400 342.52862302682877 L 2400 800 L 0 800 L 0 343.47424665834393 Z" transform="matrix(1,0,0,1,0,140)" opacity="0.53"></path><path d="M 0 320.6958772658832 Q 450 569.2734214622012 600 308.91482335243506 Q 1050 567.4081846285463 1200 330.18377799809383 Q 1650 540.0996009589531 1800 318.5057977574695 Q 2250 464.99850150362033 2400 342.52862302682877 L 2400 800 L 0 800 L 0 343.47424665834393 Z" transform="matrix(1,0,0,1,0,175)" opacity="0.68"></path><path d="M 0 320.6958772658832 Q 450 569.2734214622012 600 308.91482335243506 Q 1050 567.4081846285463 1200 330.18377799809383 Q 1650 540.0996009589531 1800 318.5057977574695 Q 2250 464.99850150362033 2400 342.52862302682877 L 2400 800 L 0 800 L 0 343.47424665834393 Z" transform="matrix(1,0,0,1,0,210)" opacity="0.84"></path><path d="M 0 320.6958772658832 Q 450 569.2734214622012 600 308.91482335243506 Q 1050 567.4081846285463 1200 330.18377799809383 Q 1650 540.0996009589531 1800 318.5057977574695 Q 2250 464.99850150362033 2400 342.52862302682877 L 2400 800 L 0 800 L 0 343.47424665834393 Z" transform="matrix(1,0,0,1,0,245)" opacity="1"></path></g></svg>
+                </div>
+                <div class="theme-option" data-theme="theme15">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 1920 1080">
+                        <rect width="100%" height="100%" fill="#ddd"/>
+                        <image href="https://cdn.svgator.com/images/2024/07/SVG-background-animation.gif"  height="100" width="100" preserveAspectRatio="xMidYMid slice" />
+                    </svg>
+                </div>
+            </div>
+            <div class="resize-handle top-left"></div>
+            <div class="resize-handle top-right"></div>
+            <div class="resize-handle bottom-left"></div>
+            <div class="resize-handle bottom-right"></div>
+        </div>
+    </div>
+    <div id="codeModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Code Preview</h2>
+            <div id="preview-container"></div>
+        </div>
+    </div>
+
+    <script src="config.js"></script>
+    <script>
+        const API_KEY = config.API_KEY; // Use the API key from config.js
+        const API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent';
+        const OPENAI_API_KEY = 'config.OPENAI_API';
+        const OPENAI_API_URL = 'https://api.openai.com/v1/images/generations';
+    
+        const sidebar = document.getElementById('sidebar');
+        const toggleSidebar = document.getElementById('toggle-sidebar');
+        const modeToggle = document.getElementById('mode-toggle');
+        const chatContainer = document.getElementById('chat-container');
+        const userInput = document.getElementById('user-input');
+        const sendButton = document.getElementById('send-button');
+        const modal = document.getElementById('codeModal');
+        const closeModal = document.getElementsByClassName('close')[0];
+        const previewContainer = document.getElementById('preview-container');
+    
+
+        //modal-advanced
+        const expandBtn = document.getElementById("expandBtn");
+        const maximizeBtn = document.getElementById("maximizeBtn");
+        const minimizeBtn = document.getElementById("minimizeBtn");
+        const modalContent = document.querySelector(".modal-content");
+        const header = document.querySelector(".header");
+        const resizeHandles = document.querySelectorAll(".resize-handle");
+
+        let isExpanded = false;
+        let isMaximized = false;
+        let originalSize = { width: modalContent.style.width, height: modalContent.style.height };
+        let isDragging = false;
+        let startX, startY, startLeft, startTop, startWidth, startHeight;
+        let currentResizeHandle;
+
+        // Expand button functionality
+        expandBtn.onclick = function() {
+            if (!isExpanded) {
+                originalSize = { width: modalContent.style.width, height: modalContent.style.height };
+                modalContent.style.width = "90%";
+                modalContent.style.height = "90%";
+                isExpanded = true;
+            } else {
+                modalContent.style.width = originalSize.width;
+                modalContent.style.height = originalSize.height;
+                isExpanded = false;
+            }
+        }
+
+        // Maximize button functionality
+        maximizeBtn.onclick = function() {
+            if (!isMaximized) {
+                originalSize = { width: modalContent.style.width, height: modalContent.style.height };
+                modalContent.style.width = "100%";
+                modalContent.style.height = "100%";
+                modalContent.style.top = "0";
+                modalContent.style.left = "0";
+                modalContent.style.transform = "none";
+                isMaximized = true;
+            } else {
+                modalContent.style.width = originalSize.width;
+                modalContent.style.height = originalSize.height;
+                modalContent.style.top = "50%";
+                modalContent.style.left = "50%";
+                modalContent.style.transform = "translate(-50%, -50%)";
+                isMaximized = false;
+            }
+        }
+
+        // Minimize button functionality
+        minimizeBtn.onclick = function() {
+            modal.style.display = "none";
+        }
+
+        // Dragging functionality
+        header.onmousedown = function(e) {
+            isDragging = true;
+            startX = e.clientX;
+            startY = e.clientY;
+            startLeft = modalContent.offsetLeft;
+            startTop = modalContent.offsetTop;
+        }
+
+        // Resizing functionality
+        resizeHandles.forEach(handle => {
+            handle.addEventListener('mousedown', (e) => {
+                isResizing = true;
+                currentResizeHandle = handle;
+                startX = e.clientX;
+                startY = e.clientY;
+                startWidth = parseInt(document.defaultView.getComputedStyle(modalContent).width, 10);
+                startHeight = parseInt(document.defaultView.getComputedStyle(modalContent).height, 10);
+                document.addEventListener('mousemove', resize);
+                document.addEventListener('mouseup', stopResize);
+                e.preventDefault();
+            });
+        });
+
+        function resize(e) {
+            if (isResizing) {
+                const dx = e.clientX - startX;
+                const dy = e.clientY - startY;
+        
+                if (currentResizeHandle.classList.contains('bottom-right')) {
+                    modalContent.style.width = `${startWidth + dx}px`;
+                    modalContent.style.height = `${startHeight + dy}px`;
+                } else if (currentResizeHandle.classList.contains('bottom-left')) {
+                    modalContent.style.width = `${startWidth - dx}px`;
+                    modalContent.style.height = `${startHeight + dy}px`;
+                    modalContent.style.left = `${startLeft + dx}px`;
+                } else if (currentResizeHandle.classList.contains('top-right')) {
+                    modalContent.style.width = `${startWidth + dx}px`;
+                    modalContent.style.height = `${startHeight - dy}px`;
+                    modalContent.style.top = `${startTop + dy}px`;
+                } else if (currentResizeHandle.classList.contains('top-left')) {
+                    modalContent.style.width = `${startWidth - dx}px`;
+                    modalContent.style.height = `${startHeight - dy}px`;
+                    modalContent.style.top = `${startTop + dy}px`;
+                    modalContent.style.left = `${startLeft + dx}px`;
+                }
+            }
+        }
+
+        function stopResize() {
+            isResizing = false;
+            document.removeEventListener('mousemove', resize);
+        }
+
+        document.onmousemove = function(e) {
+            if (isDragging) {
+                const dx = e.clientX - startX;
+                const dy = e.clientY - startY;
+                modalContent.style.left = startLeft + dx + "px";
+                modalContent.style.top = startTop + dy + "px";
+            }
+        }
+
+        document.onmouseup = function() {
+            isDragging = false;
+        }
+
+
+        toggleSidebar.addEventListener('click', () => {
+            sidebar.classList.toggle('closed');
+        });
+    
+        modeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            updateModeIcon();
+        });
+    
+        function updateModeIcon() {
+            const icon = modeToggle.querySelector('i');
+            if (document.body.classList.contains('dark-mode')) {
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+            } else {
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+            }
+        }
+    
+        sendButton.addEventListener('click', sendMessage);
+        userInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+    
+        closeModal.onclick = function() {
+            modal.style.display = "none";
+        }
+    
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+
+
+     function sendMessage() {
+            const message = userInput.value.trim();
+            if (message) {
+                addMessageToChat('user', message);
+                userInput.value = '';
+                if (message.toLowerCase().includes('create image') || message.toLowerCase().includes('generate image')) {
+                    generateImage(message);
+                } else {
+                    fetchAIResponse(message);
+                }
+            }
+        }
+    
+        function generateAvatar(name) {
+            const initials = name.split('').map(word => 
+            word[0].toUpperCase()).join('').slice(0, 3);
+    
+            const color = generateColorFromName(name);
+    
+            return {
+                initials,
+                color
+            };
+        }
+    
+        function generateColorFromName(name) {
+            let hash = 0;
+            for (let i = 0; i < name.length; i++) {
+                hash = name.charCodeAt(i) + ((hash << 5) - hash);
+            }
+            const color = ((hash & 0x00FFFFFF) ^ 0xAA).toString(16).toUpperCase();
+            return `#${'00000'.slice(0, 6 - color.length)}${color}`;
+        }
+    
+        //Updat themes
+        const Modal =  document.getElementById("themeModal");
+        const btn = document.getElementById("open-theme-modal");
+        const span = document.getElementsByClassName("close")[0];
+        const themeOptions = document.querySelectorAll(".theme-option");
+
+        btn.onclick = function() {
+            Modal.style.display = "block";
+        }
+
+        span.onclick = function() {
+            Modal.style.display = "none";
+        }
+
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                Modal.style.display = "none";
+            }
+        }
+
+        themeOptions.forEach(option => {
+            option.addEventListener("click", function() {
+                const theme = this.getAttribute("data-theme");
+                applyTheme(theme);
+                themeOptions.forEach(opt => opt.classList.remove("selected"));
+                this.classList.add("selected");
+            });
+        });
+
+        function applyTheme(theme) {
+            const svgContent = document.querySelector(`[data-theme="${theme}"] svg`).outerHTML;
+            chatContainer.style.background = `url('data:image/svg+xml;charset=utf8,${encodeURIComponent(svgContent)}')`;
+            chatContainer.style.backgroundSize = "cover";
+            chatContainer.style.backgroundRepeat = "no-repeat";
+            chatContainer.style.backgroundPosition = "center";
+            
+            // حفظ الثيم المختار في localStorage
+            localStorage.setItem("selectedTheme", theme);
+        }
+
+        // استرجاع الثيم المحفوظ عند تحميل الصفحة
+        document.addEventListener("DOMContentLoaded", function() {
+            const savedTheme = localStorage.getItem("selectedTheme");
+            if (savedTheme) {
+                applyTheme(savedTheme);
+                document.querySelector(`[data-theme="${savedTheme}"]`).classList.add("selected");
+            }
+        });
+
+        
+
+        
+
+
+        function addMessageToChat(sender, message) {
+            const messageWrapper = document.createElement('div');
+            messageWrapper.classList.add('message-wrapper');
+            
+            const avatarElement = document.createElement('img');
+            avatarElement.classList.add('avatar');
+        
+            if (sender === 'user') {
+                avatarElement.src = 'https://s.gravatar.com/avatar/0e984cbe5384a4cb7e3c2a2c1f6b1267?s=480&r=pg&d=https%3A%2F%2Fcdn.auth0.com%2Favatars%2Fur.png';
+                messageWrapper.classList.add('user-message-wrapper');
+            } else {
+                avatarElement.src = 'https://s.gravatar.com/avatar/0e984cbe5384a4cb7e3c2a2c1f6b1267?s=480&r=pg&d=https%3A%2F%2Fcdn.auth0.com%2Favatars%2Fai.png';
+                messageWrapper.classList.add('ai-message-wrapper');
+            }
+        
+            const messageElement = document.createElement('div');
+            messageElement.classList.add('message', `${sender}-message`);
+            messageElement.innerHTML = sender === 'user' ? message : formatResponse(message);
+        
+            if (sender === 'user') {
+                messageWrapper.appendChild(messageElement);
+                messageWrapper.appendChild(avatarElement);
+            } else {
+                messageWrapper.appendChild(avatarElement);
+                messageWrapper.appendChild(messageElement);
+            }
+        
+            chatContainer.appendChild(messageWrapper);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        
+            if (sender === 'ai') {
+                hljs.highlightAll();
+                setupCodeButtons();
+            }
+        }
+        
+        async function fetchAIResponse(message) {
+            try {
+                const response = await fetch(`${API_URL}?key=${API_KEY}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        contents: [{
+                            parts: [{
+                                text: message
+                            }]
+                        }]
+                    })
+                });
+    
+                if (!response.ok) {
+                    throw new Error('API request failed');
+                }
+    
+                const data = await response.json();
+                const aiResponse = data.candidates[0].content.parts[0].text;
+                addMessageToChat('ai', aiResponse);
+            } catch (error) {
+                console.error('Error:', error);
+                addMessageToChat('ai', 'Sorry, an error occurred while processing your request.');
+            }
+        }
+    
+        //generat image by open ai
+        async function generateImage(prompt) {
+            try {
+                const response = await fetch(OPENAI_API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${OPENAI_API_KEY}`
+                    },
+                    body: JSON.stringify({
+                        prompt: prompt,
+                        n: 1,
+                        size: "512x512"
+                    })
+                });
+        
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(`API request failed: ${errorData.error.message}`);
+                }
+        
+                const data = await response.json();
+                const imageUrl = data.data[0].url;
+                addImageToChat(imageUrl);
+            } catch (error) {
+                console.error('Error:', error);
+                addMessageToChat('ai', `عذرًا، حدث خطأ أثناء إنشاء الصورة: ${error.message}`);
+            }
+        }
+       
+    
+        function addImageToChat(imageUrl) {
+            const messageWrapper = document.createElement('div');
+            messageWrapper.classList.add('message-wrapper', 'ai-message-wrapper');
+            
+            const avatarElement = document.createElement('img');
+            avatarElement.classList.add('avatar');
+            avatarElement.src = 'https://s.gravatar.com/avatar/0e984cbe5384a4cb7e3c2a2c1f6b1267?s=480&r=pg&d=https%3A%2F%2Fcdn.auth0.com%2Favatars%2Fai.png';
+            
+            const messageElement = document.createElement('div');
+            messageElement.classList.add('message', 'ai-message');
+            
+            const imageElement = document.createElement('img');
+            imageElement.src = imageUrl;
+            imageElement.alt = 'Generated Image';
+            imageElement.style.maxWidth = '100%';
+            imageElement.style.height = 'auto';
+            
+            messageElement.appendChild(imageElement);
+            messageWrapper.appendChild(avatarElement);
+            messageWrapper.appendChild(messageElement);
+            
+            chatContainer.appendChild(messageWrapper);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+    
+        function formatResponse(response) {
+            response = response.replace(/\n\n/g, '</p><p>');
+            response = '<p>' + response + '</p>';
+            response = response.replace(/^### (.*$)/gim, '<h3>$1</h3>');
+            response = response.replace(/^## (.*$)/gim, '<h2>$1</h2>');
+            response = response.replace(/^# (.*$)/gim, '<h1>$1</h1>');
+            response = response.replace(/^\s*(\d+\.|\*|\-)\s/gm, '<li>');
+            response = response.replace(/<\/li>\s*<li>/g, '</li><li>');
+            response = response.replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>');
+            response = response.replace(/\n?(\|[^\n]+\|)\n(\|[-:| ]+\|)(\n\|[^\n]+\|)+/g, match => {
+                const rows = match.trim().split('\n');
+                let table = '<div class="table-container"><div class="table-controls"><button onclick="downloadPDF(this)"> <i class="fas fa-download"></i> <i class="fas fa-file-pdf"></i> PDF</button> <button onclick="downloadCSV(this)"><i class="fas fa-download"></i> CSV  <i class="fa fa-file-csv"></i> </button><input type="color" id="color-picker" onchange="changeTableColor(this)"></div><table>';
+                rows.forEach((row, index) => {
+                    const cells = row.split('|').filter(cell => cell.trim() !== '');
+                    const cellType = index === 0 ? 'th' : 'td';
+                    table += `<tr>${cells.map(cell => `<${cellType}>${cell.trim()}</${cellType}>`).join('')}</tr>`;
+                });
+                table += '</table></div>';
+                return table;
+            });
+            response = response.replace(/```(\w+)?\n([\s\S]+?)```/g, (match, language, code) => {
+                return `<pre><code class="language-${language || ''}">${code.trim()}</code></pre>`;
+            });
+            response = response.replace(/`([^`]+)`/g, '<code>$1</code>');
+            response = response.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            response = response.replace(/\*(.*?)\*/g, '<em>$1</em>');
+            response = response.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank">$1</a>');
+            response = response.replace(/^\> (.*$)/gim, '<blockquote>$1</blockquote>');
+            response = response.replace(/^\-{3,}/gim, '<hr>');
+            response = response.replace(/:([\w+-]+):/g, (match, emoji) => {
+                return `<span class="emoji" title="${emoji}">&#x${emojiMap[emoji] || '2753'};</span>`;
+            });
+            return response;
+        }
+    
+        function setupCodeButtons() {
+            const codeBlocks = document.querySelectorAll('pre');
+            codeBlocks.forEach(block => {
+                if (!block.querySelector('.copy-button')) {
+                    const copyButton = document.createElement('button');
+                    copyButton.textContent = 'Copy';
+                    copyButton.className = 'copy-button';
+                    copyButton.onclick = function() { copyCode(this); };
+                    block.appendChild(copyButton);
+                }
+    
+                if (!block.querySelector('.run-button')) {
+                    const runButton = document.createElement('button');
+                    runButton.textContent = 'Run';
+                    runButton.className = 'run-button';
+                    runButton.onclick = function() { runCode(this); };
+                    block.appendChild(runButton);
+                }
+            });
+        }
+    
+        function copyCode(button) {
+            const pre = button.parentElement;
+            const code = pre.querySelector('code');
+            const range = document.createRange();
+            range.selectNode(code);
+            window.getSelection().removeAllRanges();
+            window.getSelection().addRange(range);
+            document.execCommand('copy');
+            window.getSelection().removeAllRanges();
+            button.textContent = 'Copied!';
+            setTimeout(() => { button.textContent = 'Copy'; }, 2000);
+        }
+    
+        function runCode(button) {
+            const pre = button.parentElement;
+            const code = pre.querySelector('code').textContent;
+            previewContainer.innerHTML = code;
+            modal.style.display = "block";
+        }
+    
+        function downloadPDF(button) {
+            const table = button.closest('.table-container').querySelector('table');
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            doc.autoTable({ html: table });
+            doc.save('table.pdf');
+        }
+    
+        function downloadCSV(button) {
+            const table = button.closest('.table-container').querySelector('table');
+            const data = [];
+            const rows = table.querySelectorAll('tr');
+            rows.forEach(row => {
+                const rowData = [];
+                const cells = row.querySelectorAll('th, td');
+                cells.forEach(cell => rowData.push(cell.textContent));
+                data.push(rowData);
+            });
+            const csv = Papa.unparse(data);
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            if (navigator.msSaveBlob) {
+                navigator.msSaveBlob(blob, 'table.csv');
+            } else {
+                link.href = URL.createObjectURL(blob);
+                link.download = 'table.csv';
+                link.click();
+            }
+        }
+    
+        function changeTableColor(input) {
+            const table = input.closest('.table-container').querySelector('table');
+            table.style.backgroundColor = input.value;
+        }
+    
+        const emojiMap = {
+            'smile': '1F604',
+            'laugh': '1F606',
+            'wink': '1F609',
+            'heart': '2764',
+            'thumbsup': '1F44D',
+            'thumbsdown': '1F44E',
+            'fire': '1F525',
+            'rocket': '1F680',
+            'star': '2B50',
+        };
+    
+        // Initial welcome message
+        addMessageToChat('ai', 'Hello! How can I assist you today?\n\nI\'m an advanced AI assistant capable of helping with a wide range of tasks, including:\n\n1. Answering questions\n2. Providing detailed explanations\n3. Offering creative suggestions\n4. Helping with complex analysis\n5. Assisting with coding tasks\n6. Creating and formatting tables\n7. Using emojis for expressive communication :smile:\n\nFeel free to ask me anything, and I\'ll do my best to help! :rocket:');
+    </script>
+   
+</body>
+</html>
