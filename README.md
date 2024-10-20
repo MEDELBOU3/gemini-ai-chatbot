@@ -1,6 +1,6 @@
 # 🤖 AI Chatbot
 
-![AI Chatbot Logo](https://via.placeholder.com/150x150.png?text=AI+Chatbot)
+![AI Chatbot Logo](https://cdn.dribbble.com/userupload/6115936/file/still-7e54500446c7951207339116b09f1694.png?resize=320x240&vertical=center)
 
 An intelligent chatbot powered by advanced AI technology, capable of assisting with a wide range of tasks and queries.
 
