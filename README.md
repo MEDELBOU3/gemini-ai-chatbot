@@ -1,8 +1,10 @@
 # 🤖 AI Chatbot
 
-![AI Chatbot image](https://cdn.dribbble.com/userupload/6115936/file/still-7e54500446c7951207339116b09f1694.png?resize=320x240&vertical=center)
-![AI Chatbot image](https://cdn.dribbble.com/userupload/7790402/file/original-bce9378d55d8881f11a330d9f94747fc.png?resize=320x240&vertical=center)
-![AI Chatbot image](https://cdn.dribbble.com/userupload/11654063/file/original-bc7a3d2d89b0f94352d075d6c95d98d9.jpg?resize=320x240&vertical=center)
+<div style="display: flex; gap: 10px; justify-content: center;">
+  <img src="https://cdn.dribbble.com/userupload/6115936/file/still-7e54500446c7951207339116b09f1694.png?resize=320x240&vertical=center" alt="AI Chatbot image" style="max-width: 30%; height: auto;">
+  <img src="https://cdn.dribbble.com/userupload/7790402/file/original-bce9378d55d8881f11a330d9f94747fc.png?resize=320x240&vertical=center" alt="AI Chatbot image" style="max-width: 30%; height: auto;">
+  <img src="https://cdn.dribbble.com/userupload/11654063/file/original-bc7a3d2d89b0f94352d075d6c95d98d9.jpg?resize=320x240&vertical=center" alt="AI Chatbot image" style="max-width: 30%; height: auto;">
+</div>
 
 An intelligent chatbot powered by advanced AI technology, capable of assisting with a wide range of tasks and queries.
 
