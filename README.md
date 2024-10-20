@@ -20,8 +20,8 @@ An intelligent chatbot powered by advanced AI technology, capable of assisting w
 ![Tables](tables.jpeg)
 ![Explanation Youtube Videos](videos.jpeg)
 ![Coding](coding.jpeg)
-![Image Analysis](images.jpeg)
-![Change Themes](themes.jpeg)
+![Image Analysis](analysis.jpeg)
+![Change Themes](theme.jpeg)
 ## 📋 Table of Contents
 
 - [Installation](#installation)
