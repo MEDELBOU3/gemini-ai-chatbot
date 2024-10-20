@@ -16,11 +16,13 @@ An intelligent chatbot powered by advanced AI technology, capable of assisting w
 - 📊 Creating and formatting tables
 - 😄 Using emojis for expressive communication
 
-## Gallery
+## 📷 Gallery
 ![Tables](tables.jpeg)
 ![Explanation Youtube Videos](videos.jpeg)
 ![Coding](coding.jpeg)
 ![Image Analysis](analysis.jpeg)
+## ⚠️🚨 Important Note:
+When you insert the image from the upload image button and choose the image to be analyzed, it will be sent directly and appear in the chat. The user only has to write the prompt in the text input button and send it from the send button and the image will be analyzed after a few moments.
 ![Change Themes](theme.jpeg)
 ## 📋 Table of Contents
 
