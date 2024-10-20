@@ -65,7 +65,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---<p align="center">
   Made with ❤️ by Your Name
-</p>![Visitors](https://visitor-badge.glitch.me/badge?page_id=MEDELBOU3.ai-chatbot)```
+</p>![Visitors](https://visitor-badge.glitch.me/badge?page_id=MEDELBOU3.gemini-ai-chatbot)```
 
 This expanded README.md includes:
 
