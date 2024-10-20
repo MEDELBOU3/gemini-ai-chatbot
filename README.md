@@ -17,11 +17,11 @@ An intelligent chatbot powered by advanced AI technology, capable of assisting w
 - 😄 Using emojis for expressive communication
 
 ## Gallery
-![Tables](./gallery/tables.jpeg)
-![Explanation Youtube Videos](./gallery/videos.jpeg)
-![Coding](./gallery/coding.jpeg)
-![Image Analysis](./gallery/images.jpeg)
-![Change Themes](./gallery/themes.jpeg)
+![Tables](tables.jpeg)
+![Explanation Youtube Videos](videos.jpeg)
+![Coding](coding.jpeg)
+![Image Analysis](images.jpeg)
+![Change Themes](themes.jpeg)
 ## 📋 Table of Contents
 
 - [Installation](#installation)
