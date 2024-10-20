@@ -16,6 +16,12 @@ An intelligent chatbot powered by advanced AI technology, capable of assisting w
 - 📊 Creating and formatting tables
 - 😄 Using emojis for expressive communication
 
+## Gallery
+![Tables](./gallery/tables.jpeg)
+![Explanation Youtube Videos](./gallery/videos.jpeg)
+![Coding](./gallery/coding.jpeg)
+![Image Analysis](./gallery/images.jpeg)
+![Change Themes](./gallery/themes.jpeg)
 ## 📋 Table of Contents
 
 - [Installation](#installation)
@@ -27,6 +33,6 @@ An intelligent chatbot powered by advanced AI technology, capable of assisting w
 ## 🔧 Installation
 
 ```bash
-git clone https://github.com/yourusername/ai-chatbot.git
-cd ai-chatbot
+git clone https://github.com/MEDELBOU3/gemini-ai-chatbot.git
+cd gemini-ai-chatbot
 npm install
