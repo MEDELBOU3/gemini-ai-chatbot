@@ -66,7 +66,7 @@ Please read our [Contributing Guidelines](CONTRIBUTING.md) for more details.
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---<p align="center">
-  Made with ❤️ by Your Name
+  Made with ❤️ by MOHAMED EL-BOUANANI
 </p>![Visitors](https://visitor-badge.glitch.me/badge?page_id=MEDELBOU3.gemini-ai-chatbot)```
 
 This expanded README.md includes:
