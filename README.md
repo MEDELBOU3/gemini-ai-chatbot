@@ -19,15 +19,22 @@ An intelligent chatbot powered by advanced AI technology, capable of assisting w
 - 😄 Using emojis for expressive communication
 
 ## 📷 Gallery
+### Create Tables 
 ![Tables](tables.jpeg)
 --
+### Explanation Youtube Videos
 ![Explanation Youtube Videos](videos.jpeg)
 --
+### Coding </>
 ![Coding](coding.jpeg)
 --
+### Image Content Analysis
 ![Image Analysis](analysis.jpeg)
-## ⚠️🚨 Important Note:
-When you insert the image from the upload image button and choose the image to be analyzed, it will be sent directly and appear in the chat. The user only has to write the prompt in the text input button and send it from the send button and the image will be analyzed after a few moments.
+### ⚠️🚨 Important Note:
+
+>When you insert the image from the upload image button and choose the image to be analyzed, it will be sent directly and appear in the chat. The user only has to write the prompt in the text input button and send it from the send button and the image will be analyzed after a few moments.
+>
+### Choose Chat Themes
 ![Change Themes](theme.jpeg)
 --
 ## 📋 Table of Contents
