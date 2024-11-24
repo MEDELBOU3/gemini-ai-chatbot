@@ -1333,7 +1333,7 @@
         
         async function searchYouTubeVideos(query) {
             const YOUTUBE_API_KEY = config.YOUTUBE_API; // Replace with your actual YouTube API key
-            const maxResults = 6; // Number of video results to fetch
+            const maxResults = 2; // Number of video results to fetch
         
             try {
                 const response = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(query)}&key=${YOUTUBE_API_KEY}&type=video&maxResults=${maxResults}`);
