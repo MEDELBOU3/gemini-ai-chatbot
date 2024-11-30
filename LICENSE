@@ -1,0 +1,35 @@
+SM.studio AI Chat-Bot License
+
+Copyright (c) 2024 SM.studio ai
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to use the Software for personal or educational purposes, subject to the following conditions:
+
+1. **Scope of Use:**
+   - The Software may be used for personal, educational, or research purposes.
+   - Commercial use, redistribution, or sublicensing of the Software or its components is prohibited without explicit prior written consent from the copyright holder.
+
+2. **Spotify Integration:**
+   - This Software integrates with Spotify services using the provided Client ID and Secret ID.
+   - Users must comply with Spotify's Terms of Service and API Usage Guidelines when accessing Spotify features through this Software.
+   - The copyright holder is not responsible for any misuse of Spotify services or data obtained through Spotify APIs.
+
+3. **Generated Content:**
+   - The Software can generate responses, write programming code, create tables, and suggest YouTube videos based on user input. Users are responsible for verifying the accuracy and legality of the generated content.
+   - The Software's responses are provided for informational purposes only and are not guaranteed to be error-free or fit for a particular purpose.
+
+4. **Liability Disclaimer:**
+   - THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT.
+   - IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT, OR OTHERWISE, ARISING FROM, OUT OF, OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+5. **User Responsibility:**
+   - Users must ensure compliance with all applicable laws and regulations when using the Software.
+   - The Software should not be used for harmful, illegal, or unethical activities.
+
+6. **Modification and Distribution:**
+   - Modification of the Software is permitted for personal use only. Redistribution of modified versions is prohibited without explicit permission.
+
+7. **Third-Party Dependencies:**
+   - The Software may interact with third-party services, such as Spotify or YouTube. Users must adhere to the terms and conditions of those services independently.
+
+By using this Software, you acknowledge that you have read, understood, and agreed to this license. If you do not agree to the terms, you must not use this Software.
+
