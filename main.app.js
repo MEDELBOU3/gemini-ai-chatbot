@@ -1179,8 +1179,8 @@ const searchStyles = `
 
 // Add to your existing variables
 let isExploringMusic = false;
-const SPOTIFY_CLIENT_ID = '31f25c15fa8a4c4a845595ffbcb2d076';
-const SPOTIFY_CLIENT_SECRET = 'b6d93473aaeb4079aadbd1973854ec9f';
+const SPOTIFY_CLIENT_ID = '0af62921a92b42fa9e16f9cb39c3afe5';
+const SPOTIFY_CLIENT_SECRET = 'fda4a3f29ded406987108e337b176bed';
 
 
 
